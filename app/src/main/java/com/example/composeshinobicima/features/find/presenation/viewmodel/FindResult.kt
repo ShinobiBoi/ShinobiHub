@@ -17,6 +17,15 @@ sealed class FindResult :Result<FindViewState> {
 
     }
 
+    data class QueryChanged(val state: CommonViewState<String>) : FindResult(){
+        override fun reduce(defaultState: FindViewState, oldState: FindViewState): FindViewState {
+            return oldState.copy(
+                query = state
+            )
+        }
+
+    }
+
     data class MediaLoaded(val state: MediaViewState) : FindResult(){
         override fun reduce(defaultState: FindViewState, oldState: FindViewState): FindViewState {
             return oldState.copy(

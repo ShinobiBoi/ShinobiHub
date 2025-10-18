@@ -7,6 +7,6 @@ import com.example.composeshinobicima.appcore.mvi.ViewState
 
 data class FindViewState (
     val mediaType: CommonViewState<MediaType> = CommonViewState(data = MediaType.All),
-    val query: CommonViewState<String> = CommonViewState(),
+    val query: CommonViewState<String> = CommonViewState(data = ""),
     val media:MediaViewState = CommonViewState()
 ) :ViewState

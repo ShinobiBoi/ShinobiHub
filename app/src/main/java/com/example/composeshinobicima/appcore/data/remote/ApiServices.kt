@@ -9,6 +9,8 @@ import retrofit2.http.Query
 interface ApiServices {
 
 
+    //TRENDING////////////////////////////////////////////
+
     @GET("trending/all/week")
     suspend fun getTrendingAll(
         @Query("page") page: Int,
@@ -36,6 +38,8 @@ interface ApiServices {
 
 
 
+    //MOVIES//////////////////////////////////////////////////////
+
 
     @GET("movie/popular")
     suspend fun getPopularMovies(
@@ -55,6 +59,8 @@ interface ApiServices {
         @Query("api_key") key:String= API_KEY
     ):Response<MediaResponse>
 
+
+    //TV SERIES///////////////////////////////////////////////
 
 
     @GET("tv/on_the_air")
@@ -78,6 +84,36 @@ interface ApiServices {
     ):Response<MediaResponse>
 
 
+
+    //SEARCH////////////////////////////////////////
+
+    @GET("search/multi")
+    suspend fun searchMulti(
+        @Query("query")query:String,
+        @Query("page")page:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<MediaResponse>
+
+    @GET("search/movie")
+    suspend fun searchMovie(
+        @Query("query")query:String,
+        @Query("page")page:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<MediaResponse>
+
+    @GET("search/tv")
+    suspend fun searchTv(
+        @Query("query")query:String,
+        @Query("page")page:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<MediaResponse>
+
+    @GET("search/person")
+    suspend fun searchPeople(
+        @Query("query")query:String,
+        @Query("page")page:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<MediaResponse>
 
 
     @GET("discover/movie")

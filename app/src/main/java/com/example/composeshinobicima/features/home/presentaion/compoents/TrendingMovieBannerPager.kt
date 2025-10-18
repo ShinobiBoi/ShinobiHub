@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -29,18 +30,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
+import com.example.composeshinobicima.appcore.domain.model.MediaType
+import kotlinx.coroutines.delay
 
 @Composable
-fun TrendingMovieBannerPager(mediaItems: List<MediaItem>) {
-    val pagerState = rememberPagerState(pageCount = { mediaItems.size })
+fun TrendingMovieBannerPager(
+    mediaItems: List<MediaItem>,
+    pagerState: PagerState
+) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     // Auto-slide logic
-    LaunchedEffect(pagerState) {
+    LaunchedEffect(Unit) {
         while (true) {
-            kotlinx.coroutines.delay(10000)
-            val nextPage = (pagerState.currentPage + 1) % mediaItems.size
-            pagerState.animateScrollToPage(nextPage)
+            val currentPage = pagerState.currentPage
+            delay(5000)
+            if (mediaItems.isNotEmpty()&&currentPage==pagerState.currentPage) {
+                val nextPage = (pagerState.currentPage + 1) % mediaItems.size
+                pagerState.animateScrollToPage(nextPage)
+            }
         }
     }
 
@@ -49,19 +57,19 @@ fun TrendingMovieBannerPager(mediaItems: List<MediaItem>) {
         state = pagerState,
         modifier = Modifier.fillMaxWidth()
     ) { page ->
-        val movie = mediaItems[page]
+        val mediaItem = mediaItems[page]
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(screenHeight * 0.275f)
+                .height(screenHeight * 0.3f)
                 .padding(horizontal = 13.dp, vertical = 24.dp)
                 .clip(RoundedCornerShape(12.dp))
         ) {
             // Movie image
             AsyncImage(
-                model = "https://image.tmdb.org/t/p/original${movie.backdrop_path}",
-                contentDescription = movie.title,
+                model = "https://image.tmdb.org/t/p/original${mediaItem.backdrop_path}",
+                contentDescription = mediaItem.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.matchParentSize()
             )
@@ -88,12 +96,12 @@ fun TrendingMovieBannerPager(mediaItems: List<MediaItem>) {
                         .clip(RoundedCornerShape(15.dp))
                         .background(Color(0xFF2196F3))
                         .padding(4.dp),
-                    text = "Trending Movies",
+                    text = "Trending Now",
                     color = Color.White,
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = movie.title ?: "",
+                    text = if (mediaItem.media_type==MediaType.Movies) mediaItem.title ?: "" else mediaItem.name?:"",
                     color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Clip,
@@ -101,6 +109,7 @@ fun TrendingMovieBannerPager(mediaItems: List<MediaItem>) {
                     modifier = Modifier.basicMarquee()
                 )
 
+                val currentPage = pagerState.currentPage
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
@@ -108,7 +117,7 @@ fun TrendingMovieBannerPager(mediaItems: List<MediaItem>) {
                         .padding(top = 8.dp)
                 ) {
                     repeat(mediaItems.size) { index ->
-                        val isSelected = pagerState.currentPage == index
+                        val isSelected = currentPage == index
                         Box(
                             modifier = Modifier
                                 .padding(4.dp)

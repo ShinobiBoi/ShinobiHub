@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -39,6 +40,7 @@ import com.example.composeshinobicima.features.home.presentaion.viewmodel.HomeVi
 fun HomeScreen(controller: NavController) {
 
     val scrollState = rememberScrollState()
+    val pagerState = rememberPagerState(pageCount = {8})
 
 
 
@@ -112,7 +114,7 @@ fun HomeScreen(controller: NavController) {
             }
 
             state.trendingAll.data?.let {
-                TrendingMovieBannerPager(it.subList(0, 8))
+                TrendingMovieBannerPager(it.subList(0, 8),pagerState)
             }
 
 

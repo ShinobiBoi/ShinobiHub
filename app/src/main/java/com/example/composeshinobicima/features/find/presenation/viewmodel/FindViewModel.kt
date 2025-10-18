@@ -9,7 +9,14 @@ import com.example.composeshinobicima.appcore.domain.usecase.GetTrendingTvUseCas
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.MVIBaseViewModel
 import com.example.composeshinobicima.appcore.mvi.MediaViewState
+import com.example.composeshinobicima.features.find.domain.usecase.SearchMovieUseCase
+import com.example.composeshinobicima.features.find.domain.usecase.SearchMultiUseCase
+import com.example.composeshinobicima.features.find.domain.usecase.SearchPeopleUseCase
+import com.example.composeshinobicima.features.find.domain.usecase.SearchTvUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Delay
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -22,7 +29,10 @@ class FindViewModel @Inject constructor(
     val getTrendingMoviesUseCase: GetTrendingMoviesUseCase,
     val getTrendingTvUseCase: GetTrendingTvUseCase,
     val getTrendingPeopleUseCase: GetTrendingPeopleUseCase,
-
+    val searchMultiUseCase: SearchMultiUseCase,
+    val searchMovieUseCase: SearchMovieUseCase,
+    val searchTvUseCase: SearchTvUseCase,
+    val searchPeopleUseCase: SearchPeopleUseCase
     ) : MVIBaseViewModel<FindAction, FindResult, FindViewState>() {
     override val defaultViewState: FindViewState
         get() = FindViewState()
@@ -34,6 +44,9 @@ class FindViewModel @Inject constructor(
 
             is FindAction.ChangeMediaType -> {
                 emit(FindResult.Type(CommonViewState(data = action.type)))
+            }
+            is FindAction.ChangeQuery -> {
+                emit(FindResult.QueryChanged(CommonViewState(data = action.query)))
             }
 
             is FindAction.GetTrendingAll -> {
@@ -55,6 +68,24 @@ class FindViewModel @Inject constructor(
             is FindAction.GetTrendingPeople -> {
                 handleNewMedia(this, getTrendingPeopleUseCase(1))
             }
+
+            is FindAction.SearchMulti -> {
+                handleNewMedia(this, searchMultiUseCase(action.query, 1))
+
+            }
+            is FindAction.SearchMovie -> {
+                handleNewMedia(this, searchMovieUseCase(action.query, 1))
+
+            }
+            is FindAction.SearchTv -> {
+                handleNewMedia(this, searchTvUseCase(action.query, 1))
+
+            }
+            is FindAction.SearchPeople -> {
+                handleNewMedia(this, searchPeopleUseCase(action.query, 1))
+
+            }
+
 
         }
 

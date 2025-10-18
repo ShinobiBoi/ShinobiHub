@@ -2,6 +2,7 @@ package com.example.composeshinobicima.appcore.components
 
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -28,8 +29,8 @@ fun MediaTypeList(
 
     LazyRow(
         modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround
+            .fillMaxWidth().padding(horizontal = 13.dp),
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(MediaType.entries) {
 

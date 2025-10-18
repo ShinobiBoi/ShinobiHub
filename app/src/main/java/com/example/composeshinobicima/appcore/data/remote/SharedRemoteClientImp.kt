@@ -1,5 +1,6 @@
 package com.example.composeshinobicima.appcore.data.remote
 
+import com.example.composeshinobicima.appcore.data.mappers.toDataState
 import com.example.composeshinobicima.appcore.data.model.genre.GenreResponse
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
@@ -13,9 +14,8 @@ class SharedRemoteClientImp @Inject constructor(val api: ApiServices) : SharedRe
 
     override suspend fun getTrendingAll(page: Int): DataState<MediaResponse> {
         return try {
-            val response = api.getTrendingAll(page)
+            api.getTrendingAll(page).toDataState()
 
-            validResponse(response)
         } catch (t: Throwable) {
             DataState.Error(t)
         }
@@ -23,8 +23,8 @@ class SharedRemoteClientImp @Inject constructor(val api: ApiServices) : SharedRe
 
     override suspend fun getTrendingMovies(page: Int): DataState<MediaResponse> {
         return try {
-            val response = api.getTrendingMovies(page)
-            validResponse(response)
+            api.getTrendingMovies(page).toDataState()
+
 
         } catch (t: Throwable) {
             DataState.Error(t)
@@ -34,9 +34,9 @@ class SharedRemoteClientImp @Inject constructor(val api: ApiServices) : SharedRe
 
     override suspend fun getTrendingTv(page: Int): DataState<MediaResponse> {
         return try {
-            val response = api.getTrendingTv(page)
+            api.getTrendingTv(page).toDataState()
 
-            validResponse(response)
+
         } catch (t: Throwable) {
             DataState.Error(t)
         }
@@ -44,8 +44,8 @@ class SharedRemoteClientImp @Inject constructor(val api: ApiServices) : SharedRe
 
     override suspend fun getTrendingPeople(page: Int): DataState<MediaResponse> {
         return try {
-            val response = api.getTrendingPeople(page)
-            validResponse(response)
+            api.getTrendingPeople(page).toDataState()
+
         } catch (t: Throwable) {
             DataState.Error(t)
         }
@@ -72,19 +72,5 @@ class SharedRemoteClientImp @Inject constructor(val api: ApiServices) : SharedRe
 
     }
 
-
-
-    private fun validResponse(response: Response<MediaResponse>): DataState<MediaResponse> {
-
-        return if (response.isSuccessful) {
-            val body = response.body()
-            when {
-                body == null -> DataState.Error(Throwable("Response body is null"))
-                else -> DataState.Success(body)
-            }
-        } else {
-            DataState.Error(HttpException(response))
-        }
-    }
 
 }

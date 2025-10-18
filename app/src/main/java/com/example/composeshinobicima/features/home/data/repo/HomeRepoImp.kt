@@ -1,7 +1,6 @@
 package com.example.composeshinobicima.features.home.data.repo
 
-import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
-import com.example.composeshinobicima.appcore.data.model.movie.toDomain
+import com.example.composeshinobicima.appcore.data.mappers.validate
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.features.home.domain.remote.HomeRemoteClient
@@ -10,46 +9,33 @@ import javax.inject.Inject
 
 class HomeRepoImp @Inject constructor(val remote: HomeRemoteClient): HomeRepo {
     override suspend fun getPopularMovies(page: Int): DataState<List<MediaItem>> {
-        return validResponse(remote.getPopularMovies(page))
+        return remote.getPopularMovies(page).validate()
     }
 
 
     override suspend fun getTopRatedMovies(page: Int): DataState<List<MediaItem>> {
-        return validResponse(remote.getTopRatedMovies(page))
+        return remote.getTopRatedMovies(page).validate()
 
     }
 
     override suspend fun getUpComingMovies(page: Int): DataState<List<MediaItem>> {
-        return validResponse(remote.getUpComingMovies(page))
+        return remote.getUpComingMovies(page).validate()
 
     }
 
     override suspend fun getOnTheAirTv(page: Int): DataState<List<MediaItem>> {
-        return validResponse(remote.getOnTheAirTv(page))
+        return remote.getOnTheAirTv(page).validate()
 
     }
 
     override suspend fun getPopularTv(page: Int): DataState<List<MediaItem>> {
-        return validResponse(remote.getPopularTv(page))
+        return remote.getPopularTv(page).validate()
 
     }
 
     override suspend fun getTopRatedTv(page: Int): DataState<List<MediaItem>> {
-        return validResponse(remote.getTopRatedTv(page))
+        return remote.getTopRatedTv(page).validate()
     }
 
-    private fun validResponse(dataState: DataState<MediaResponse>): DataState<List<MediaItem>> {
-        return when(dataState){
-            is DataState.Success->{
-                if (dataState.data.mediaItems.isNullOrEmpty()) DataState.Empty
-                else DataState.Success(dataState.data.mediaItems.map { it.toDomain() })
-            }
-            is DataState.Error->{
-                DataState.Error(dataState.throwable)
-            }
-            else->{
-                DataState.Error(UnknownError())
-            }
-        }
-    }
+
 }
