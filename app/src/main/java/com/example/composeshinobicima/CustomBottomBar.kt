@@ -3,8 +3,10 @@ package com.example.composeshinobicima
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -77,6 +79,7 @@ fun CustomBottomNavigationBar(
                         val iconContent = @Composable {
                             Icon(
                                 painter = painterResource(id = item.icon),
+                                modifier = Modifier.size(28.dp),
                                 contentDescription = item.label,
                                 tint = if (isSelected) selectedIconColorOnCircle else iconTint
                             )
@@ -86,7 +89,7 @@ fun CustomBottomNavigationBar(
                             Surface(
                                 shape = CircleShape,
                                 color = selectedIndicatorColor,
-                                modifier = Modifier.size(60.dp)
+                                modifier = Modifier.size(48.dp)
                             ) {
                                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                                     iconContent()
@@ -116,36 +119,4 @@ fun CustomBottomNavigationBar(
 }
 
 
-/*
-@Preview(showBackground = true)
-@Composable
-fun PreviewBottomNav_HomeSelected() {
-    MaterialTheme {
-        Surface {
-            // Preview with 'home' selected
-            CustomBottomNavigationBar(selectedRoute = ScreenResources.HomeScreenRoute)
-        }
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewBottomNav_FeedSelected() {
-    MaterialTheme {
-        Surface {
-            // Preview with 'feed' selected (a non-circular item)
-            CustomBottomNavigationBar(selectedRoute = ScreenResources.FindScreenRoute)
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewBottomNav_ProfileSelected() {
-    MaterialTheme {
-        Surface {
-            // Preview with 'profile' selected (a non-circular item)
-            CustomBottomNavigationBar(selectedRoute = ScreenResources.ProfileScreenRoute)
-        }
-    }
-}*/

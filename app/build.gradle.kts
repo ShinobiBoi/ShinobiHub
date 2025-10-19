@@ -43,6 +43,9 @@ android {
     buildFeatures {
         compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.8.0"
+    }
 }
 
 dependencies {
@@ -78,6 +81,8 @@ dependencies {
 
     testImplementation(libs.coroutines.test)
     testImplementation(libs.mockk)
+
+    implementation(libs.androidx.material.icons.extended)
 
 
 
