@@ -25,10 +25,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.composeshinobicima.R
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 import kotlinx.coroutines.delay
@@ -94,7 +96,7 @@ fun TrendingMovieBannerPager(
                 Text(
                     modifier = Modifier
                         .clip(RoundedCornerShape(15.dp))
-                        .background(Color(0xFF2196F3))
+                        .background(colorResource(R.color.light_blue))
                         .padding(4.dp),
                     text = "Trending Now",
                     color = Color.White,

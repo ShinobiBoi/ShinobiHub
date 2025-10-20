@@ -1,15 +1,18 @@
-package com.example.composeshinobicima.appcore.data.model.movie
+package com.example.composeshinobicima.features.detail.data.model.detailitem
 
-import com.example.composeshinobicima.appcore.domain.model.MediaItem
+import com.example.composeshinobicima.appcore.data.model.genre.Genre
+import com.example.composeshinobicima.appcore.data.model.movie.MediaItemDto
 import com.example.composeshinobicima.appcore.domain.model.MediaType
+import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
 
-data class MediaItemDto(
+data class DetailMediaItemDto(
+
     val id: Int,
     val media_type: String? = null,
     val adult: Boolean? = null,
     val popularity: Double? = null,
     val overview: String? = null,
-    val genre_ids: List<Int>? = null,
+    val genres: List<Genre>? = null,
     val poster_path: String? = null,
     val backdrop_path: String? = null,
     val vote_average: Double? = null,
@@ -19,12 +22,14 @@ data class MediaItemDto(
     val title: String? = null,
     val original_title: String? = null,
     val release_date: String? = null,
+    val runtime:String?=null,
 
     // TV-specific
     val name: String? = null,
     val original_name: String? = null,
     val first_air_date: String? = null,
     val origin_country: List<String>? = null,
+    val number_of_seasons: Int?= null,
 
     // Person-specific
     val known_for_department: String? = null,
@@ -33,8 +38,7 @@ data class MediaItemDto(
     val known_for: List<MediaItemDto>? = null // 👈 recursive list
 )
 
-
-fun MediaItemDto.toDomain(): MediaItem {
+fun DetailMediaItemDto.toDomain(): DetailMediaItem {
 
     val resolvedType = when {
         // If TMDB gives us a media_type, just use it
@@ -52,18 +56,39 @@ fun MediaItemDto.toDomain(): MediaItem {
         else -> MediaType.All
     }
 
-    return MediaItem(
+
+    val resolvedTitle = when{
+        !title.isNullOrEmpty() -> title
+        !name.isNullOrEmpty() -> name
+        else -> null
+    }
+
+
+    val resolvedPoster= when{
+        !poster_path.isNullOrEmpty() -> poster_path
+        !profile_path.isNullOrEmpty() -> profile_path
+        else -> null
+    }
+
+    val resolvedDate = when{
+        !release_date.isNullOrEmpty() -> release_date
+        !first_air_date.isNullOrEmpty() -> first_air_date
+        else -> null
+    }
+
+
+    return DetailMediaItem(
         id = id,
-        media_type = when (media_type) {
-            "movie" -> MediaType.Movies
-            "tv" -> MediaType.Tv
-            "person" -> MediaType.People
-            else -> MediaType.All
-        },
+        media_type = resolvedType,
+        resolvedTilte=resolvedTitle?:"",
+        resolvedPoster=resolvedPoster?:"",
+        resolvedDate=resolvedDate?:"",
+        runtime = runtime,
+        number_of_seasons = number_of_seasons,
         adult = adult,
         popularity = popularity,
         overview = overview,
-        genre_ids = genre_ids,
+        genres = genres,
         poster_path = poster_path,
         backdrop_path = backdrop_path,
         vote_average = vote_average,

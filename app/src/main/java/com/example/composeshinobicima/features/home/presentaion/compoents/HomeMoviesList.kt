@@ -14,10 +14,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composeshinobicima.appcore.components.PosterList
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.mvi.MediaViewState
 
 @Composable
-fun HomeMoviesList(state: MediaViewState, title: String) {
+fun HomeMoviesList(state: MediaViewState, title: String,
+                   onItemClick: (Int, MediaType) -> Unit) {
 
     Column(
         modifier = Modifier,
@@ -52,7 +54,8 @@ fun HomeMoviesList(state: MediaViewState, title: String) {
             }
 
             else -> {
-                PosterList(state.data)
+                PosterList(state.data,onItemClick)
+
             }
         }
     }

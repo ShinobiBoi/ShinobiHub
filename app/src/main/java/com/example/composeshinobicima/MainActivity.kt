@@ -17,8 +17,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.composeshinobicima.appcore.data.remote.ApiServices
+import com.example.composeshinobicima.appcore.domain.model.MediaItem
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
+import com.example.composeshinobicima.features.detail.presentaion.screen.MediaDetailScreen
 import com.example.composeshinobicima.features.home.presentaion.screen.HomeScreen
 import com.example.composeshinobicima.features.find.presenation.screen.FindScreen
 import com.example.composeshinobicima.ui.theme.ComposeShinobiCimaTheme
@@ -47,16 +51,21 @@ class MainActivity: ComponentActivity() {
 
                 Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
 
-                    CustomBottomNavigationBar(currentRoute) { selectedRoute ->
-                        if (selectedRoute != currentRoute) {
-                            bottomNavViewModel.onRouteSelected(selectedRoute)
-                            navController.navigate(selectedRoute) {
-                                launchSingleTop = true
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                restoreState = true
+                    if (currentRoute !is ScreenResources.DetailScreenRoute){
+                        CustomBottomNavigationBar(currentRoute) { selectedRoute ->
+                            if (selectedRoute != currentRoute) {
+                                bottomNavViewModel.onRouteSelected(selectedRoute)
+                                navController.navigate(selectedRoute) {
+                                    launchSingleTop = true
+                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                    restoreState = true
+                                }
                             }
                         }
+
                     }
+
+
                 }
                 ) { innerPadding ->
 
@@ -68,9 +77,18 @@ class MainActivity: ComponentActivity() {
                     ) {
                         composable<ScreenResources.HomeScreenRoute> {
                             HomeScreen(controller = navController)
+
                         }
                         composable<ScreenResources.FindScreenRoute> {
                             FindScreen(navController)
+                        }
+
+                        composable<ScreenResources.DetailScreenRoute> {
+                            val args = it.toRoute<ScreenResources.DetailScreenRoute>()
+                            MediaDetailScreen(
+                                args.id,
+                                args.mediaType
+                            )
                         }
 
                         composable<ScreenResources.ProfileScreenRoute> { }

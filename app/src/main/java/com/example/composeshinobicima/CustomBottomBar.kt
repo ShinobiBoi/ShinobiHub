@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,10 +47,8 @@ fun CustomBottomNavigationBar(
     onItemSelected: (ScreenResources) -> Unit
 ) {
     val containerColor = Color.White
-    val selectedIndicatorColor = Color(0xFF001F3F)
-    val unselectedIconColor = Color(0xFF72747C)
+    val selectedIndicatorColor = colorResource(R.color.dark_blue)
     val selectedIconColorOnCircle = Color.White
-    val labelColor = Color(0xFF72747C)
 
     // Wrap the NavigationBar with Surface to round its corners
     Surface(
@@ -67,10 +66,7 @@ fun CustomBottomNavigationBar(
             navItems.forEach { item ->
                 val isSelected = selectedRoute == item.route
 
-                val iconTint by animateColorAsState(
-                    targetValue = if (isSelected) labelColor else unselectedIconColor,
-                    label = "Icon Color Animation"
-                )
+
 
                 NavigationBarItem(
                     selected = isSelected,
@@ -81,7 +77,7 @@ fun CustomBottomNavigationBar(
                                 painter = painterResource(id = item.icon),
                                 modifier = Modifier.size(28.dp),
                                 contentDescription = item.label,
-                                tint = if (isSelected) selectedIconColorOnCircle else iconTint
+                                tint = if (isSelected) selectedIconColorOnCircle else Color.Gray
                             )
                         }
 
@@ -102,15 +98,15 @@ fun CustomBottomNavigationBar(
                     label = {
                         Text(
                             text = if (isSelected) "" else item.label,
-                            color = if (isSelected) labelColor else unselectedIconColor
+                            color = Color.Gray
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
                         indicatorColor = Color.Transparent,
                         selectedIconColor = Color.Transparent,
-                        unselectedIconColor = unselectedIconColor,
-                        selectedTextColor = labelColor,
-                        unselectedTextColor = unselectedIconColor
+                        unselectedIconColor = Color.Gray,
+                        selectedTextColor = Color.Gray,
+                        unselectedTextColor =Color.Gray
                     )
                 )
             }

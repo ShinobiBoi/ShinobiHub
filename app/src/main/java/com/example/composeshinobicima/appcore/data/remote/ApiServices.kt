@@ -2,8 +2,10 @@ package com.example.composeshinobicima.appcore.data.remote
 
 import com.example.composeshinobicima.appcore.data.model.genre.GenreResponse
 import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
+import com.example.composeshinobicima.features.detail.data.model.detailitem.DetailMediaItemDto
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiServices {
@@ -82,6 +84,35 @@ interface ApiServices {
         @Query("page")page:Int,
         @Query("api_key") key:String= API_KEY
     ):Response<MediaResponse>
+
+
+
+
+
+
+    //Detail////////////////////////////////////////
+
+
+
+    @GET("movie/{movie_id}")
+    suspend fun getDetailMovie(
+        @Path("movie_id") movieId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<DetailMediaItemDto>
+
+    @GET("tv/{series_id}")
+    suspend fun getDetailTv(
+        @Path("series_id") seriesId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<DetailMediaItemDto>
+
+    @GET("person/{person_id}")
+    suspend fun getDetailPerson(
+        @Path("person_id") personId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<DetailMediaItemDto>
+
+
 
 
 

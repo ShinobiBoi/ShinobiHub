@@ -16,11 +16,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composeshinobicima.appcore.components.PosterList
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.mvi.MediaViewState
 
 
 @Composable
-fun FindMediaGridList(state: MediaViewState) {
+fun FindMediaGridList(state: MediaViewState, onItemClick: (Int, MediaType) -> Unit) {
 
 
     Column(
@@ -47,7 +48,7 @@ fun FindMediaGridList(state: MediaViewState) {
             }
 
             else -> {
-                GridPosterList(state.data)
+                GridPosterList(state.data,onItemClick)
             }
         }
     }

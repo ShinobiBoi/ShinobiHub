@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.composeshinobicima.appcore.components.MediaTypeList
 import com.example.composeshinobicima.appcore.domain.model.MediaType
+import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.home.presentaion.compoents.HomeGenreList
 import com.example.composeshinobicima.features.home.presentaion.compoents.HomeMoviesList
 import com.example.composeshinobicima.features.home.presentaion.compoents.TrendingMovieBannerPager
@@ -136,26 +137,45 @@ fun HomeScreen(controller: NavController) {
                     if (state.trendingTv.data.isNullOrEmpty())viewModel.executeAction(HomeAction.GetTrendingTv)
                     if (state.trendingPeople.data.isNullOrEmpty())viewModel.executeAction(HomeAction.GetTrendingPeople)
 
-                    HomeMoviesList(state.trendingMovies, title = "Trending movies")
+                    HomeMoviesList(state.trendingMovies, title = "Trending movies"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
-                    HomeMoviesList(state.trendingTv, title = "Trending tv series")
+                    }
 
-                    HomeMoviesList(state.trendingPeople, title = "Trending people")
+                    HomeMoviesList(state.trendingTv, title = "Trending tv series"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
+                    }
+
+                    HomeMoviesList(state.trendingPeople, title = "Trending people"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
+
+                    }
                 }
                 MediaType.Movies->{
                     if (state.popularMovies.data.isNullOrEmpty()) viewModel.executeAction(HomeAction.GetPopularMovies)
                     if (state.topRatedMovies.data.isNullOrEmpty())viewModel.executeAction(HomeAction.GetTopRatedMovies)
                     if (state.upComingMovies.data.isNullOrEmpty()) viewModel.executeAction(HomeAction.GetUpComingMovies)
 
-                    HomeMoviesList(state.trendingMovies, title = "Trending movies")
+                    HomeMoviesList(state.trendingMovies, title = "Trending movies"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
+                    }
 
-                    HomeMoviesList(state.popularMovies, title = "Popular movies")
+                    HomeMoviesList(state.popularMovies, title = "Popular movies"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
-                    HomeMoviesList(state.topRatedMovies, title = "Top rated movies")
+                    }
 
-                    HomeMoviesList(state.upComingMovies, title = "Upcoming movies")
+                    HomeMoviesList(state.topRatedMovies, title = "Top rated movies"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
+
+                    }
+
+                    HomeMoviesList(state.upComingMovies, title = "Upcoming movies"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
+
+                    }
                 }
                 MediaType.Tv->{
                     if (state.onTheAirTv.data.isNullOrEmpty())viewModel.executeAction(HomeAction.GetOnTheAirTv)
@@ -163,14 +183,29 @@ fun HomeScreen(controller: NavController) {
                     if (state.popularTv.data.isNullOrEmpty()) viewModel.executeAction(HomeAction.GetPopularTv)
 
 
-                    HomeMoviesList(state.onTheAirTv, title = "On the air tv series")
-                    HomeMoviesList(state.trendingTv, title = "Trending tv series")
-                    HomeMoviesList(state.topRatedTv, title = "Top rated tv series")
-                    HomeMoviesList(state.popularTv, title = "Popular tv series")
+                    HomeMoviesList(state.onTheAirTv, title = "On the air tv series"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
+
+                    }
+                    HomeMoviesList(state.trendingTv, title = "Trending tv series"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
+
+                    }
+                    HomeMoviesList(state.topRatedTv, title = "Top rated tv series"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
+
+                    }
+                    HomeMoviesList(state.popularTv, title = "Popular tv series"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
+
+                    }
 
                 }
                 MediaType.People ->{
-                    HomeMoviesList(state.trendingPeople, title = "Trending people")
+                    HomeMoviesList(state.trendingPeople, title = "Trending people"){ id,type ->
+                        controller.navigate(ScreenResources.DetailScreenRoute(id,type))
+
+                    }
 
                 }
                 else -> {}

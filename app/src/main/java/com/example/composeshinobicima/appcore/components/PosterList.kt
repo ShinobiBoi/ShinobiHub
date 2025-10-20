@@ -10,9 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 
 @Composable
-fun PosterList(posters: List<MediaItem>) {
+fun PosterList(posters: List<MediaItem>, onItemClick: (Int,MediaType) -> Unit) {
 
 
     LazyRow(
@@ -22,8 +23,8 @@ fun PosterList(posters: List<MediaItem>) {
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
 
-        items(posters) {
-            SmallPosterItem(it)
+        items(posters) {poster ->
+            SmallPosterItem(poster, onItemClick)
         }
     }
 }

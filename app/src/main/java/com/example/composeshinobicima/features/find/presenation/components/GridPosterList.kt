@@ -12,10 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.composeshinobicima.appcore.components.SmallPosterItem
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 
 @Composable
 fun GridPosterList(
-    posters: List<MediaItem>
+    posters: List<MediaItem>,
+    onItemClick: (Int,MediaType) -> Unit
 ) {
 
     LazyVerticalGrid(
@@ -29,7 +31,7 @@ fun GridPosterList(
     ) {
         items(posters) { poster ->
 
-            SmallPosterItem(poster)
+            SmallPosterItem(poster,onItemClick)
 
         }
     }

@@ -2,7 +2,6 @@ package com.example.composeshinobicima.appcore.components
 
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -14,8 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composeshinobicima.R
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 
 @Composable
@@ -38,8 +39,8 @@ fun MediaTypeList(
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = if (it == mediaType) Color.Black else Color(
-                        0xFFF0F0F0
+                    containerColor = if (it == mediaType) Color.Black else colorResource(
+                        R.color.light_gray
                     )
                 ),
                 onClick = { cardClick(it) }

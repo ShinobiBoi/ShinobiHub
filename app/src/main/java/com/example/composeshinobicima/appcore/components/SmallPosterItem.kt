@@ -2,6 +2,7 @@ package com.example.composeshinobicima.appcore.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,14 +26,16 @@ import com.example.composeshinobicima.appcore.domain.model.MediaType
 
 
 @Composable
-fun SmallPosterItem(mediaItem: MediaItem) {
+fun SmallPosterItem(mediaItem: MediaItem,onItemClick: (Int,MediaType) -> Unit) {
 
-    Column {
-        if (mediaItem.media_type == MediaType.People || !mediaItem.profile_path.isNullOrEmpty()) {
+    Column (modifier = Modifier.clickable(
+        onClick = { onItemClick(mediaItem.id,mediaItem.media_type) }
+    )){
+        if (mediaItem.media_type == MediaType.People ) {
             Poster(mediaItem.name, mediaItem.profile_path)
-        } else if (mediaItem.media_type == MediaType.Movies || !mediaItem.title.isNullOrEmpty()) {
+        } else if (mediaItem.media_type == MediaType.Movies ) {
             Poster(mediaItem.title, mediaItem.poster_path)
-        } else if (mediaItem.media_type == MediaType.Tv || !mediaItem.name.isNullOrEmpty()) {
+        } else if (mediaItem.media_type == MediaType.Tv ) {
             Poster(mediaItem.name, mediaItem.poster_path)
         }
 
@@ -51,10 +54,12 @@ private fun Poster(title: String?, posterPath: String?) {
             modifier = Modifier
                 .background(Color.Transparent)
                 .size(width = 115.dp, height = 156.dp)
-                .clip(RoundedCornerShape(10.dp)),
+                .clip(RoundedCornerShape(10.dp))
+            ,
             model = "https://image.tmdb.org/t/p/w500${posterPath ?: ""}",
             contentDescription = "",
             contentScale = ContentScale.Crop,
+
 
             )
     }
@@ -88,7 +93,7 @@ fun SmallPosterItemPreview() {
         release_date = "2014-11-05"
     )
 
-    SmallPosterItem(mediaItem = sampleMediaItem)
+   // SmallPosterItem(mediaItem = sampleMediaItem)
 }
 
 

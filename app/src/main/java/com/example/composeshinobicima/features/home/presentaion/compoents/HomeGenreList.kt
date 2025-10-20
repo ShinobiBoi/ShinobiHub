@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.composeshinobicima.R
@@ -50,7 +51,7 @@ fun HomeGenreList() {
                 modifier = Modifier.size(90.dp),
                 shape = RoundedCornerShape(15.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFFAFAFA))
+                colors = CardDefaults.cardColors(containerColor = colorResource(R.color.off_white))
                 //backgroundColor = Color(0xFFFAFAFA)
             ) {
                 Column(

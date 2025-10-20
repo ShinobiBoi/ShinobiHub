@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +49,7 @@ import com.example.composeshinobicima.R
 import com.example.composeshinobicima.appcore.components.MediaTypeList
 import com.example.composeshinobicima.appcore.data.model.genre.Genre
 import com.example.composeshinobicima.appcore.domain.model.MediaType
+import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.find.presenation.components.FindMediaGridList
 import com.example.composeshinobicima.features.find.presenation.viewmodel.FindAction
 import com.example.composeshinobicima.features.find.presenation.viewmodel.FindViewModel
@@ -211,7 +213,9 @@ fun FindScreen(navController: NavController) {
             }
         }
 
-        FindMediaGridList(state.media)
+        FindMediaGridList(state.media){id,type ->
+            navController.navigate(ScreenResources.DetailScreenRoute(id,type))
+        }
 
 
     }
@@ -228,7 +232,7 @@ fun FilterSheetContent(
     genres: List<Genre>
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val highlightColor = Color(0xFF3070AD)
+    val highlightColor = colorResource(R.color.light_blue)
 
     val visibleGenres = if (expanded) genres else genres.take((genres.size / 2).coerceAtLeast(1))
 
@@ -283,7 +287,7 @@ fun FilterSheetContent(
                         BorderStroke(2.dp, highlightColor)
                     else
                         BorderStroke(1.dp, Color.Transparent),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0)),
+                    colors = CardDefaults.cardColors(containerColor = colorResource(R.color.light_gray)),
                     onClick = { toggleGenre(item) }
                 ) {
                     Text(
