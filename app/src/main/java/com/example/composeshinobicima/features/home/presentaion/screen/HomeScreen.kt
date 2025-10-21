@@ -1,5 +1,6 @@
 package com.example.composeshinobicima.features.home.presentaion.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -157,17 +158,28 @@ fun HomeScreen(controller: NavController) {
                     if (state.topRatedMovies.data.isNullOrEmpty())viewModel.executeAction(HomeAction.GetTopRatedMovies)
                     if (state.upComingMovies.data.isNullOrEmpty()) viewModel.executeAction(HomeAction.GetUpComingMovies)
 
+                    Log.d("TAG", "HomeScreen popular: ${state.popularMovies.data}")
+                    Log.d("TAG", "HomeScreen top rated: ${state.trendingMovies.data}")
+                    Log.d("TAG", "HomeScreen upcoming: ${state.upComingMovies.data}")
+
+
+
                     HomeMoviesList(state.trendingMovies, title = "Trending movies"){ id,type ->
+                        Log.d("TAGG", "HomeScreen: $id $type")
                         controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
                     }
 
                     HomeMoviesList(state.popularMovies, title = "Popular movies"){ id,type ->
+                        Log.d("TAGG", "HomeScreen: $id $type")
+
                         controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
                     }
 
                     HomeMoviesList(state.topRatedMovies, title = "Top rated movies"){ id,type ->
+                        Log.d("TAGG", "HomeScreen: $id $type")
+
                         controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
                     }

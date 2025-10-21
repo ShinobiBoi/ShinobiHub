@@ -87,7 +87,7 @@ class MainActivity: ComponentActivity() {
                             val args = it.toRoute<ScreenResources.DetailScreenRoute>()
                             MediaDetailScreen(
                                 args.id,
-                                args.mediaType
+                                args.mediaType,navController
                             )
                         }
 

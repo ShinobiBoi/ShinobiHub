@@ -1,5 +1,6 @@
 package com.example.composeshinobicima.appcore.data.model.movie
 
+import android.util.Log
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 
@@ -42,24 +43,23 @@ fun MediaItemDto.toDomain(): MediaItem {
             "movie" -> MediaType.Movies
             "tv" -> MediaType.Tv
             "person" -> MediaType.People
-            else -> MediaType.All
+            else -> {
+                MediaType.All
+            }
         }
 
         // Otherwise, infer type based on available fields (your if logic)
         !known_for_department.isNullOrEmpty() || !profile_path.isNullOrEmpty() -> MediaType.People
         !title.isNullOrEmpty() -> MediaType.Movies
         !name.isNullOrEmpty() -> MediaType.Tv
-        else -> MediaType.All
+        else ->{
+            MediaType.All
+        }
     }
 
     return MediaItem(
         id = id,
-        media_type = when (media_type) {
-            "movie" -> MediaType.Movies
-            "tv" -> MediaType.Tv
-            "person" -> MediaType.People
-            else -> MediaType.All
-        },
+        media_type = resolvedType,
         adult = adult,
         popularity = popularity,
         overview = overview,

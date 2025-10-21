@@ -21,6 +21,8 @@ data class DetailMediaItem(
     val backdrop_path: String? = null,
     val vote_average: Double? = null,
     val vote_count: Int? = null,
+    val original_language:String?=null,
+
 
     // Movie-specific
     val title: String? = null,

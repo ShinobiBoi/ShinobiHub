@@ -1,5 +1,6 @@
 package com.example.composeshinobicima.appcore.data.mappers
 
+import android.util.Log
 import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
 import com.example.composeshinobicima.appcore.data.model.movie.toDomain
 import com.example.composeshinobicima.appcore.domain.DataState

@@ -2,7 +2,10 @@ package com.example.composeshinobicima.appcore.data.remote
 
 import com.example.composeshinobicima.appcore.data.model.genre.GenreResponse
 import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
+import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
 import com.example.composeshinobicima.features.detail.data.model.detailitem.DetailMediaItemDto
+import com.example.composeshinobicima.features.detail.data.model.review.ReviewResponse
+import com.example.composeshinobicima.features.detail.data.model.video.VideoResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -147,17 +150,83 @@ interface ApiServices {
     ):Response<MediaResponse>
 
 
+    @GET("genre/movie/list")
+    suspend fun getGenreList(
+        @Query("api_key") apiKey: String = API_KEY,
+    ): Response<GenreResponse>
+
+    //VIDEOS//////////////////////////////////////
+
+
+
+    @GET("movie/{movie_id}/videos")
+    suspend fun getMovieVideo(
+        @Path("movie_id") movieId:Int,
+        @Query("api_key") key:String= API_KEY
+    ) :Response<VideoResponse>
+
+    @GET("tv/{series_id}/videos")
+    suspend fun getTvVideo(
+        @Path("series_id") seriesId:Int,
+        @Query("api_key")key:String= API_KEY
+    ) :Response<VideoResponse>
+
+
+
+    //CREDITS///////////////////////////////////////
+
+
+    @GET("movie/{movie_id}/credits")
+    suspend fun getMovieCredits(
+        @Path("movie_id") movieId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<CreditsResponse>
+
+    @GET("tv/{series_id}/credits")
+    suspend fun getTvCredits(
+        @Path("series_id") seriesId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<CreditsResponse>
+
+    //SIMILAR//////////////////////////
+
+    @GET("movie/{movie_id}/similar")
+    suspend fun getMovieSimilar(
+        @Path("movie_id") movieId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<MediaResponse>
+
+    @GET("tv/{series_id}/similar")
+    suspend fun getTvSimilar(
+        @Path("series_id") seriesId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<MediaResponse>
+
+
+    //REVIEWS/////////////////////////
+
+    @GET("movie/{movie_id}/reviews")
+    suspend fun getMovieReviews(
+        @Path("movie_id") movieId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<ReviewResponse>
+
+    @GET("tv/{series_id}/reviews")
+    suspend fun getTvReviews(
+        @Path("series_id") seriesId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<ReviewResponse>
+
+
+
+
+    //Discover////////////////////////////////////
     @GET("discover/movie")
     suspend fun getGenreWiseMovieList(
         @Query("with_genres") genresId: String,
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = API_KEY,
     ): Response<MediaResponse>
-
-    @GET("genre/movie/list")
-    suspend fun getGenreList(
-        @Query("api_key") apiKey: String = API_KEY,
-    ): Response<GenreResponse>
 
 
     companion object{

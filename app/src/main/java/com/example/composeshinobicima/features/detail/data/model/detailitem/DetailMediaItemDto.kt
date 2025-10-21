@@ -17,6 +17,8 @@ data class DetailMediaItemDto(
     val backdrop_path: String? = null,
     val vote_average: Double? = null,
     val vote_count: Int? = null,
+    val original_language:String?=null,
+
 
     // Movie-specific
     val title: String? = null,
@@ -83,6 +85,7 @@ fun DetailMediaItemDto.toDomain(): DetailMediaItem {
         resolvedTilte=resolvedTitle?:"",
         resolvedPoster=resolvedPoster?:"",
         resolvedDate=resolvedDate?:"",
+        original_language=original_language,
         runtime = runtime,
         number_of_seasons = number_of_seasons,
         adult = adult,

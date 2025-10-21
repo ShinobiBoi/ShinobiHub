@@ -46,7 +46,7 @@ fun SmallPosterItem(mediaItem: MediaItem,onItemClick: (Int,MediaType) -> Unit) {
 
 
 @Composable
-private fun Poster(title: String?, posterPath: String?) {
+ fun Poster(title: String?, posterPath: String?) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     ) {

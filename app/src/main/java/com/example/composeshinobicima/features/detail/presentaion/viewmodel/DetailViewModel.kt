@@ -4,12 +4,18 @@ import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.MVIBaseViewModel
+import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
+import com.example.composeshinobicima.features.detail.data.model.video.VideoItem
 import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
 import com.example.composeshinobicima.features.detail.domain.usecase.GetDetailMovieUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetDetailPersonUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetDetailTvUseCase
-import com.example.composeshinobicima.features.home.presentaion.viewmodel.HomeResult
-import com.example.composeshinobicima.features.home.presentaion.viewmodel.HomeViewState
+import com.example.composeshinobicima.features.detail.domain.usecase.GetMovieCreditsUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetMovieVideoUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetMoviesSimilarUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetTvCreditsUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetTvSimilarUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetTvVideoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -21,7 +27,13 @@ import javax.inject.Inject
 class DetailViewModel @Inject constructor(
     val getDetailMovieUseCase: GetDetailMovieUseCase,
     val getDetailTvUseCase: GetDetailTvUseCase,
-    val getDetailPersonUseCase: GetDetailPersonUseCase
+    val getDetailPersonUseCase: GetDetailPersonUseCase,
+    val getMovieVideoUseCase: GetMovieVideoUseCase,
+    val getTvVideoUseCase: GetTvVideoUseCase,
+    val getMovieCreditsUseCase: GetMovieCreditsUseCase,
+    val getTvCreditsUseCase: GetTvCreditsUseCase,
+    val getMoviesSimilarUseCase: GetMoviesSimilarUseCase,
+    val getTvSimilarUseCase: GetTvSimilarUseCase,
 ) : MVIBaseViewModel<DetailActions, DetailResults, DetailViewState>() {
 
     override val defaultViewState: DetailViewState
@@ -30,11 +42,15 @@ class DetailViewModel @Inject constructor(
     override fun handleAction(action: DetailActions): Flow<DetailResults> = flow {
 
         when (action) {
+
+            is DetailActions.SwitchTab ->{
+                emit(DetailResults.SwitchTab(CommonViewState(data = action.tab)))
+            }
+
             is DetailActions.GetDetailMovie -> {
                 handleGetDetailMovie(this){
                     getDetailMovieUseCase(action.movieId)
                 }
-
             }
             is DetailActions.GetDetailTv ->{
                 handleGetDetailMovie(this){
@@ -47,9 +63,133 @@ class DetailViewModel @Inject constructor(
                 }
             }
 
+            is DetailActions.GetMovieVideo ->{
+                handleGetVideo(this){
+                    getMovieVideoUseCase(action.movieId)
+                }
+            }
+
+            is DetailActions.GetTvVideo ->{
+                handleGetVideo(this){
+                    getTvVideoUseCase(action.seriesId)
+                }
+            }
+
+            is DetailActions.GetMovieCredits->{
+
+                handleGetCredits(this){
+                    getMovieCreditsUseCase(action.movieId)
+                }
+            }
+
+            is DetailActions.GetTvCredits->{
+                handleGetCredits(this){
+                    getTvCreditsUseCase(action.seriesId)
+                }
+            }
+
+            is DetailActions.GetMovieSimilar->{
+                handleGetSimilar(this){
+                    getMoviesSimilarUseCase(action.movieId)
+                }
+            }
+
+            is DetailActions.GetTvSimilar->{
+                handleGetSimilar(this){
+                    getTvSimilarUseCase(action.seriesId)
+                }
+            }
+
+
+
             else -> {}
 
         }
+
+    }
+
+    private suspend fun handleGetSimilar(
+        flowCollector: FlowCollector<DetailResults>,
+        getSimilar: suspend () -> DataState<List<MediaItem>>
+    ) {
+        flowCollector.emit(DetailResults.Loading(true))
+
+
+        when(val result=getSimilar()){
+
+            is DataState.Success -> flowCollector.emit(
+                DetailResults.SimilarLoad(CommonViewState(data = result.data, isSuccess = true))
+            )
+            is DataState.Error -> flowCollector.emit(
+                DetailResults.SimilarLoad(CommonViewState(errorThrowable = result.throwable))
+            )
+            is DataState.Empty -> flowCollector.emit(
+                DetailResults.SimilarLoad(CommonViewState(isEmpty = true))
+            )
+            else -> {}
+
+
+        }
+
+
+        flowCollector.emit(DetailResults.Loading(false))
+
+    }
+
+
+    private suspend fun handleGetCredits(
+        flowCollector: FlowCollector<DetailResults>,
+        getCredits: suspend () -> DataState<CreditsResponse>
+    ) {
+        flowCollector.emit(DetailResults.Loading(true))
+
+        when(val result=getCredits()){
+
+            is DataState.Success -> flowCollector.emit(
+                DetailResults.CreditsLoad(CommonViewState(data = result.data, isSuccess = true))
+            )
+            is DataState.Error -> flowCollector.emit(
+                DetailResults.CreditsLoad(CommonViewState(errorThrowable = result.throwable))
+            )
+            is DataState.Empty -> flowCollector.emit(
+                DetailResults.CreditsLoad(CommonViewState(isEmpty = true))
+            )
+            else -> {}
+
+
+        }
+
+
+        flowCollector.emit(DetailResults.Loading(false))
+
+
+    }
+
+    private suspend fun handleGetVideo(
+        flowCollector: FlowCollector<DetailResults>,
+         getVideo: suspend () -> DataState<List<VideoItem>>
+    ) {
+
+
+        flowCollector.emit(DetailResults.Loading(true))
+
+        when(val result=getVideo()){
+
+            is DataState.Success -> flowCollector.emit(
+                DetailResults.VideoList(CommonViewState(data = result.data, isSuccess = true))
+            )
+            is DataState.Error -> flowCollector.emit(
+                DetailResults.VideoList(CommonViewState(errorThrowable = result.throwable))
+            )
+            is DataState.Empty -> flowCollector.emit(
+                DetailResults.VideoList(CommonViewState(isEmpty = true))
+            )
+            else -> {}
+
+
+        }
+        flowCollector.emit(DetailResults.Loading(false))
+
 
     }
 
@@ -57,8 +197,7 @@ class DetailViewModel @Inject constructor(
         flowCollector: FlowCollector<DetailResults>,
         getMediaItem: suspend () -> DataState<DetailMediaItem>
     ) {
-        flowCollector.emit(DetailResults.DetailMediaLoaded(CommonViewState(isLoading = true)))
-
+        flowCollector.emit(DetailResults.Loading(true))
         when(val result=getMediaItem()){
             is DataState.Success -> flowCollector.emit(
                 DetailResults.DetailMediaLoaded(CommonViewState(data = result.data()))
@@ -76,6 +215,7 @@ class DetailViewModel @Inject constructor(
         }
 
 
+        flowCollector.emit(DetailResults.Loading(false))
 
 
 

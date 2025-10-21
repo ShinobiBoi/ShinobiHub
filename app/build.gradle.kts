@@ -50,6 +50,9 @@ android {
 
 dependencies {
 
+    implementation(libs.core)
+
+
 
     implementation(libs.androidx.foundation) // or latest
 
