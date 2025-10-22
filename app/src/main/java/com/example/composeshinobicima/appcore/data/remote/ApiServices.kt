@@ -188,6 +188,12 @@ interface ApiServices {
         @Query("api_key") key:String= API_KEY
     ):Response<CreditsResponse>
 
+    @GET("person/{person_id}/combined_credits")
+    suspend fun getPersonCredits(
+        @Path("person_id") personId:Int,
+        @Query("api_key") key:String= API_KEY
+    ):Response<MediaResponse>
+
     //SIMILAR//////////////////////////
 
     @GET("movie/{movie_id}/similar")
@@ -216,6 +222,8 @@ interface ApiServices {
         @Path("series_id") seriesId:Int,
         @Query("api_key") key:String= API_KEY
     ):Response<ReviewResponse>
+
+
 
 
 

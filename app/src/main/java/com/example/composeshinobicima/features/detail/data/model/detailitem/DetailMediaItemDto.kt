@@ -2,6 +2,7 @@ package com.example.composeshinobicima.features.detail.data.model.detailitem
 
 import com.example.composeshinobicima.appcore.data.model.genre.Genre
 import com.example.composeshinobicima.appcore.data.model.movie.MediaItemDto
+import com.example.composeshinobicima.appcore.data.model.movie.toDomain
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
 
@@ -37,6 +38,9 @@ data class DetailMediaItemDto(
     val known_for_department: String? = null,
     val profile_path: String? = null,
     val gender: Int? = null,
+    val birthday:String? = null,
+    val biography:String? = null,
+
     val known_for: List<MediaItemDto>? = null // 👈 recursive list
 )
 
@@ -106,6 +110,8 @@ fun DetailMediaItemDto.toDomain(): DetailMediaItem {
         known_for_department = known_for_department,
         profile_path = profile_path,
         gender = gender,
-        known_for = known_for?.map { it } // or `.map { it.toDomain() }` if you want to map recursively
+        birthday=birthday,
+        biography=biography,
+        known_for = known_for?.map { it.toDomain() } // or `.map { it.toDomain() }` if you want to map recursively
     )
 }

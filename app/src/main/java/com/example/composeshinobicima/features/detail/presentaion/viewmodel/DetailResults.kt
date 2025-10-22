@@ -4,6 +4,7 @@ import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.MediaViewState
 import com.example.composeshinobicima.appcore.mvi.Result
 import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
+import com.example.composeshinobicima.features.detail.data.model.review.Review
 import com.example.composeshinobicima.features.detail.data.model.video.VideoItem
 import com.example.composeshinobicima.features.detail.domain.constants.DetailTab
 import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
@@ -71,6 +72,18 @@ sealed class DetailResults : Result<DetailViewState> {
 
     }
 
+    data class PeopleCreditsLoad(val state: MediaViewState):DetailResults(){
+        override fun reduce(
+            defaultState: DetailViewState,
+            oldState: DetailViewState
+        ): DetailViewState {
+            return oldState.copy(
+                peopleCredits = state
+            )
+        }
+
+    }
+
     data class SimilarLoad(val state: MediaViewState) : DetailResults(){
         override fun reduce(
             defaultState: DetailViewState,
@@ -78,6 +91,18 @@ sealed class DetailResults : Result<DetailViewState> {
         ): DetailViewState {
             return oldState.copy(
                 similar = state
+            )
+        }
+
+    }
+
+    data class ReviewsLoad(val state: CommonViewState<List<Review>>) : DetailResults(){
+        override fun reduce(
+            defaultState: DetailViewState,
+            oldState: DetailViewState
+        ): DetailViewState {
+            return oldState.copy(
+                review = state
             )
         }
 

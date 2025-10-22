@@ -19,6 +19,8 @@ interface DetailRemoteClient {
 
     suspend fun getMovieCredits(movieId: Int):DataState<CreditsResponse>
     suspend fun getTvCredits(seriesId: Int):DataState<CreditsResponse>
+    suspend fun getPeopleCredits(personId: Int):DataState<MediaResponse>
+
 
     suspend fun getMovieSimilar(movieId: Int):DataState<MediaResponse>
     suspend fun getTvSimilar(seriesId: Int):DataState<MediaResponse>

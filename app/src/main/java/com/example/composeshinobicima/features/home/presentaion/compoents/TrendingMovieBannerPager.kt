@@ -71,7 +71,7 @@ fun TrendingMovieBannerPager(
             // Movie image
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/original${mediaItem.backdrop_path}",
-                contentDescription = mediaItem.title,
+                contentDescription = mediaItem.resolvedTitle,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.matchParentSize()
             )
@@ -103,7 +103,7 @@ fun TrendingMovieBannerPager(
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = if (mediaItem.media_type==MediaType.Movies) mediaItem.title ?: "" else mediaItem.name?:"",
+                    text = mediaItem.resolvedTitle?:"",
                     color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Clip,

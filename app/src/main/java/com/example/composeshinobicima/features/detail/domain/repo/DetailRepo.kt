@@ -20,6 +20,8 @@ interface DetailRepo {
 
     suspend fun getMovieCredits(movieId: Int):DataState<CreditsResponse>
     suspend fun getTvCredits(seriesId: Int):DataState<CreditsResponse>
+    suspend fun getPeopleCredits(personId: Int):DataState<List<MediaItem>>
+
 
     suspend fun getMovieSimilar(movieId: Int):DataState<List<MediaItem>>
     suspend fun getTvSimilar(seriesId: Int):DataState<List<MediaItem>>

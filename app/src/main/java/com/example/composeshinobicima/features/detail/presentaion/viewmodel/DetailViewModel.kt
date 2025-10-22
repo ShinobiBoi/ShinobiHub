@@ -1,19 +1,24 @@
 package com.example.composeshinobicima.features.detail.presentaion.viewmodel
 
+import android.util.Log
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.MVIBaseViewModel
 import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
+import com.example.composeshinobicima.features.detail.data.model.review.Review
 import com.example.composeshinobicima.features.detail.data.model.video.VideoItem
 import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
 import com.example.composeshinobicima.features.detail.domain.usecase.GetDetailMovieUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetDetailPersonUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetDetailTvUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetMovieCreditsUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetMovieReviewsUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetMovieVideoUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetMoviesSimilarUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetPeopleCreditsUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetTvCreditsUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetTvReviewsUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetTvSimilarUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetTvVideoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,8 +37,11 @@ class DetailViewModel @Inject constructor(
     val getTvVideoUseCase: GetTvVideoUseCase,
     val getMovieCreditsUseCase: GetMovieCreditsUseCase,
     val getTvCreditsUseCase: GetTvCreditsUseCase,
+    val getPeopleCreditsUseCase: GetPeopleCreditsUseCase,
     val getMoviesSimilarUseCase: GetMoviesSimilarUseCase,
     val getTvSimilarUseCase: GetTvSimilarUseCase,
+    val getMovieReviewsUseCase: GetMovieReviewsUseCase,
+    val getTvReviewsUseCase: GetTvReviewsUseCase
 ) : MVIBaseViewModel<DetailActions, DetailResults, DetailViewState>() {
 
     override val defaultViewState: DetailViewState
@@ -87,6 +95,11 @@ class DetailViewModel @Inject constructor(
                     getTvCreditsUseCase(action.seriesId)
                 }
             }
+            is DetailActions.GetPeopleCredits->{
+                handleGetPeopleCredits(this){
+                    getPeopleCreditsUseCase(action.personId)
+                }
+            }
 
             is DetailActions.GetMovieSimilar->{
                 handleGetSimilar(this){
@@ -99,12 +112,86 @@ class DetailViewModel @Inject constructor(
                     getTvSimilarUseCase(action.seriesId)
                 }
             }
+            is DetailActions.GetMovieReviews -> {
+
+                handleGetReviews(this){
+                    getMovieReviewsUseCase(action.movieId)
+                }
+
+
+            }
+
+            is DetailActions.GetTvReviews ->{
+                handleGetReviews(this){
+                    getTvReviewsUseCase(action.seriesId)
+                }
+
+            }
+
 
 
 
             else -> {}
 
         }
+
+    }
+
+    private suspend fun handleGetPeopleCredits(
+        flowCollector: FlowCollector<DetailResults>,
+        getPeopleCredits: suspend () -> DataState<List<MediaItem>>
+    ) {
+        flowCollector.emit(DetailResults.Loading(true))
+
+
+
+        when(val result=getPeopleCredits()){
+
+            is DataState.Success -> flowCollector.emit(
+                DetailResults.PeopleCreditsLoad(CommonViewState(data = result.data, isSuccess = true))
+            )
+            is DataState.Error -> flowCollector.emit(
+                DetailResults.PeopleCreditsLoad(CommonViewState(errorThrowable = result.throwable))
+            )
+            is DataState.Empty -> flowCollector.emit(
+                DetailResults.PeopleCreditsLoad(CommonViewState(isEmpty = true))
+            )
+            else -> {}
+
+
+        }
+
+
+
+        flowCollector.emit(DetailResults.Loading(false))
+
+    }
+
+    private suspend fun handleGetReviews(
+        flowCollector: FlowCollector<DetailResults>,
+        getReviews:  suspend () -> DataState<List<Review>>
+    ) {
+        flowCollector.emit(DetailResults.Loading(true))
+
+        when(val result=getReviews()){
+
+            is DataState.Success -> flowCollector.emit(
+                DetailResults.ReviewsLoad(CommonViewState(data = result.data, isSuccess = true))
+            )
+            is DataState.Error -> flowCollector.emit(
+                DetailResults.ReviewsLoad(CommonViewState(errorThrowable = result.throwable))
+            )
+            is DataState.Empty -> flowCollector.emit(
+                DetailResults.ReviewsLoad(CommonViewState(isEmpty = true))
+            )
+            else -> {}
+
+
+        }
+
+
+        flowCollector.emit(DetailResults.Loading(false))
+
 
     }
 

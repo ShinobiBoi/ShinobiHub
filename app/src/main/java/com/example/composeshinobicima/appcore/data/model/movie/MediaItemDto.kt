@@ -48,6 +48,8 @@ fun MediaItemDto.toDomain(): MediaItem {
             }
         }
 
+
+
         // Otherwise, infer type based on available fields (your if logic)
         !known_for_department.isNullOrEmpty() || !profile_path.isNullOrEmpty() -> MediaType.People
         !title.isNullOrEmpty() -> MediaType.Movies
@@ -57,26 +59,44 @@ fun MediaItemDto.toDomain(): MediaItem {
         }
     }
 
+
+    val resolvedTitle = when{
+        !title.isNullOrEmpty() -> title
+        !name.isNullOrEmpty() -> name
+        else -> null
+    }
+
+
+    val resolvedPoster= when{
+        !poster_path.isNullOrEmpty() -> poster_path
+        !profile_path.isNullOrEmpty() -> profile_path
+        else -> null
+    }
+
+    val resolvedDate = when{
+        !release_date.isNullOrEmpty() -> release_date
+        !first_air_date.isNullOrEmpty() -> first_air_date
+        else -> null
+    }
+
+
     return MediaItem(
         id = id,
         media_type = resolvedType,
+        resolvedTitle=resolvedTitle?:"",
+        resolvedPoster=resolvedPoster?:"",
+        resolvedDate=resolvedDate?:"",
         adult = adult,
         popularity = popularity,
         overview = overview,
         genre_ids = genre_ids,
-        poster_path = poster_path,
         backdrop_path = backdrop_path,
         vote_average = vote_average,
         vote_count = vote_count,
-        title = title,
         original_title = original_title,
-        release_date = release_date,
-        name = name,
         original_name = original_name,
-        first_air_date = first_air_date,
         origin_country = origin_country,
         known_for_department = known_for_department,
-        profile_path = profile_path,
         gender = gender,
         known_for = known_for?.map { it } // or `.map { it.toDomain() }` if you want to map recursively
     )

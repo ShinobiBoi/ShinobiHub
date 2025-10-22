@@ -31,7 +31,13 @@ fun GridPosterList(
     ) {
         items(posters) { poster ->
 
-            SmallPosterItem(poster,onItemClick)
+            SmallPosterItem(
+                poster.resolvedTitle,
+                poster.resolvedPoster,
+                poster.media_type,
+                poster.id,
+                onItemClick
+            )
 
         }
     }

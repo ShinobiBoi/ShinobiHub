@@ -42,6 +42,10 @@ class DetailRemoteClientImp @Inject constructor(val api: ApiServices) :DetailRem
         return api.getTvCredits(seriesId).toDataState()
     }
 
+    override suspend fun getPeopleCredits(personId: Int): DataState<MediaResponse> {
+        return api.getPersonCredits(personId).toDataState()
+    }
+
     override suspend fun getMovieSimilar(movieId: Int): DataState<MediaResponse> {
         return api.getMovieSimilar(movieId).toDataState()
     }

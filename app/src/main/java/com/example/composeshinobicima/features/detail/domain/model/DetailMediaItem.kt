@@ -2,6 +2,7 @@ package com.example.composeshinobicima.features.detail.domain.model
 
 import com.example.composeshinobicima.appcore.data.model.genre.Genre
 import com.example.composeshinobicima.appcore.data.model.movie.MediaItemDto
+import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 
 data class DetailMediaItem(
@@ -41,5 +42,7 @@ data class DetailMediaItem(
     val known_for_department: String? = null,
     val profile_path: String? = null,
     val gender: Int? = null,
-    val known_for: List<MediaItemDto>? = null // 👈 recursive list
+    val known_for: List<MediaItem>? = null, // 👈 recursive list
+    val birthday:String? = null,
+    val biography:String? = null,
 )

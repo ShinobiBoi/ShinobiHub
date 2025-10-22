@@ -91,6 +91,10 @@ class DetailRepoImp @Inject constructor(val remote: DetailRemoteClient) : Detail
         }
     }
 
+    override suspend fun getPeopleCredits(personId: Int): DataState<List<MediaItem>> {
+        return remote.getPeopleCredits(personId).validate()
+    }
+
     override suspend fun getMovieSimilar(movieId: Int): DataState<List<MediaItem>> {
         return remote.getMovieSimilar(movieId).validate()
     }

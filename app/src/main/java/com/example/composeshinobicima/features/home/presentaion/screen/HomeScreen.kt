@@ -95,7 +95,7 @@ fun HomeScreen(controller: NavController) {
                         .clip(CircleShape)
                         .size(54.dp),
                     model = "https://image.tmdb.org/t/p/original${state.popularMovies.data?.get(0)?.backdrop_path}",
-                    contentDescription = state.popularMovies.data?.get(0)?.title,
+                    contentDescription = state.popularMovies.data?.get(0)?.resolvedTitle,
                     contentScale = ContentScale.Crop,
                 )
             }
@@ -158,27 +158,22 @@ fun HomeScreen(controller: NavController) {
                     if (state.topRatedMovies.data.isNullOrEmpty())viewModel.executeAction(HomeAction.GetTopRatedMovies)
                     if (state.upComingMovies.data.isNullOrEmpty()) viewModel.executeAction(HomeAction.GetUpComingMovies)
 
-                    Log.d("TAG", "HomeScreen popular: ${state.popularMovies.data}")
-                    Log.d("TAG", "HomeScreen top rated: ${state.trendingMovies.data}")
-                    Log.d("TAG", "HomeScreen upcoming: ${state.upComingMovies.data}")
+
 
 
 
                     HomeMoviesList(state.trendingMovies, title = "Trending movies"){ id,type ->
-                        Log.d("TAGG", "HomeScreen: $id $type")
                         controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
                     }
 
                     HomeMoviesList(state.popularMovies, title = "Popular movies"){ id,type ->
-                        Log.d("TAGG", "HomeScreen: $id $type")
 
                         controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
                     }
 
                     HomeMoviesList(state.topRatedMovies, title = "Top rated movies"){ id,type ->
-                        Log.d("TAGG", "HomeScreen: $id $type")
 
                         controller.navigate(ScreenResources.DetailScreenRoute(id,type))
 
