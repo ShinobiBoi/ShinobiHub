@@ -1,6 +1,7 @@
 package com.example.composeshinobicima.features.detail.presentaion.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -51,6 +52,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 
@@ -223,15 +225,13 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .wrapContentHeight()
-                            .padding(horizontal = 18.dp)
                     ) {
 
                         val selectedTab = state.selectedTab.data
 
                         Row(
                             modifier = Modifier
-                                .padding(top = 28.dp)
+                                .padding(top = 28.dp, start = 18.dp, end = 18.dp)
                                 .fillMaxWidth(0.8f) // doesn’t take full width, but centered
                                 .align(Alignment.CenterHorizontally)
                                 .clip(RoundedCornerShape(20.dp))
@@ -279,7 +279,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                 }
 
                                 Text(
-                                    modifier = Modifier.padding(top = 32.dp),
+                                    modifier = Modifier.padding(top = 32.dp, start = 18.dp,end=18.dp),
                                     text = "About",
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold
@@ -290,7 +290,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                 ExpandableText(
                                     text = about ?: "",
                                     fontFamily = poppinsFamily,
-                                    modifier = Modifier.padding(top = 16.dp)
+                                    modifier = Modifier.padding(top = 16.dp, start = 18.dp, end = 18.dp)
                                 )
 
 
@@ -301,7 +301,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
 
                                 state.similar.data?.let {
                                     Text(
-                                        modifier = Modifier.padding(top = 32.dp),
+                                        modifier = Modifier.padding(top = 32.dp, start = 18.dp, end = 18.dp),
                                         text = "Similar",
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold
@@ -320,7 +320,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                 state.peopleCredits.data?.let {
 
                                     Text(
-                                        modifier = Modifier.padding(top = 32.dp),
+                                        modifier = Modifier.padding(top = 32.dp, start = 18.dp, end = 18.dp),
                                         text = "Known for",
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold
@@ -336,29 +336,56 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                     }
 
                                 }
+                                Spacer(modifier = Modifier.height(16.dp))
 
 
                             }
 
                             DetailTab.REVIEWS -> {
-                                val reviews = state.review.data ?: emptyList()
-
-                                if (!reviews.isEmpty()) {
                                     Text(
                                         modifier = Modifier.padding(top = 32.dp, start = 18.dp),
                                         text = "Reviews",
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold
                                     )
-                                    ReviewsList(reviews.take(3))
-                                }
+                                    ReviewsList(state.review.data)
+
+                                Spacer(modifier = Modifier.height(16.dp))
 
 
                             }
 
                             DetailTab.SEASONS -> {
+                                val seasons = state.detailMediaItem.data?.seasons ?: emptyList()
+
+                                if (seasons.isNotEmpty()) {
+                                    Text(
+                                        modifier = Modifier.padding(top = 32.dp, start = 18.dp),
+                                        text = "Seasons",
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+
+                                    SeasonsList(seasons)
+                                } else {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 40.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = "No seasons available.",
+                                            color = Color.Gray,
+                                            fontSize = 14.sp,
+                                            fontFamily = poppinsFamily
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
 
                             }
+
 
                             else -> {}
 
@@ -378,7 +405,7 @@ fun CreditsList(creditsResponse: CreditsResponse, onItemClick: (Int, MediaType) 
 
     creditsResponse.cast?.let {
         Text(
-            modifier = Modifier.padding(top = 32.dp),
+            modifier = Modifier.padding(top = 32.dp, start = 18.dp),
             text = "Cast",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -413,7 +440,7 @@ fun CreditsList(creditsResponse: CreditsResponse, onItemClick: (Int, MediaType) 
     if (!creditsResponse.crew.isNullOrEmpty()) {
 
         Text(
-            modifier = Modifier.padding(top = 32.dp),
+            modifier = Modifier.padding(top = 32.dp, start = 18.dp),
             text = "Crew",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -436,6 +463,103 @@ fun CreditsList(creditsResponse: CreditsResponse, onItemClick: (Int, MediaType) 
 
     }
 }
+
+@Composable
+fun SeasonsList(seasons: List<com.example.composeshinobicima.features.detail.data.model.detailitem.Season>) {
+    var expanded by remember { mutableStateOf(false) }
+    val itemsToShow = if (expanded) seasons else seasons.take(5)
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp, horizontal = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        itemsToShow.forEach { season ->
+            SeasonItem(season)
+        }
+
+        // Only show the toggle if there are more than 3 seasons
+        if (seasons.size > 5) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = if (expanded) "Show less" else "Show more",
+                color = colorResource(R.color.dark_blue),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clickable { expanded = !expanded }
+                    .padding(vertical = 4.dp)
+            )
+        }
+    }
+}
+
+
+
+@Composable
+fun SeasonItem(season: com.example.composeshinobicima.features.detail.data.model.detailitem.Season) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.off_white)),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, Color.LightGray),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
+            // Poster image
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/w500${season.poster_path}",
+                contentDescription = season.name,
+                modifier = Modifier
+                    .size(width = 100.dp, height = 140.dp)
+                    .clip(RoundedCornerShape(10.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            // Season info
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = season.name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.Black
+                )
+
+                Text(
+                    text = "Episodes: ${season.episode_count}",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+
+                if (season.overview.isNotEmpty()) {
+                    ExpandableText(
+                        modifier = Modifier.padding(top = 6.dp),
+                        text = season.overview,
+                        minimizedMaxLines=4
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+
 
 
 @Composable
@@ -622,7 +746,7 @@ fun NativeYouTubePlayer(
 
 
         Text(
-            modifier = Modifier.padding(top = 32.dp),
+            modifier = Modifier.padding(top = 32.dp, start = 18.dp, end = 18.dp),
             text = video.name!!,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -631,7 +755,7 @@ fun NativeYouTubePlayer(
 
         AndroidView(
             modifier = Modifier
-                .padding(top = 8.dp)
+                .padding(top = 8.dp, start = 18.dp, end = 18.dp)
                 .fillMaxWidth()
                 .height(220.dp),
             factory = { ctx ->
@@ -643,7 +767,7 @@ fun NativeYouTubePlayer(
                         override fun onReady(youTubePlayer: YouTubePlayer) {
                             // loadVideo expects (videoId, startSeconds)
 
-                            youTubePlayer.cueVideo(video.key!!, 0f)
+                            youTubePlayer.cueVideo(video.key, 0f)
                         }
                     })
                 }
@@ -655,14 +779,16 @@ fun NativeYouTubePlayer(
 
 @Composable
 fun ReviewsList(
-    reviews: List<Review>,
+    reviews: List<Review>?,
     modifier: Modifier = Modifier
 ) {
-    if (reviews.isEmpty()) {
+
+
+    if (reviews.isNullOrEmpty()) {
         Box(
             modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 40.dp),
+                .fillMaxSize()
+                .padding(vertical = 40.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -673,14 +799,32 @@ fun ReviewsList(
             )
         }
     } else {
+        var expanded by remember { mutableStateOf(false) }
+        val itemsToShow = if (expanded) reviews else reviews.take(3)
+
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 18.dp, vertical = 12.dp),
+                .padding(vertical = 12.dp, horizontal = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            reviews.forEach { review ->
+            itemsToShow.forEach { review ->
                 ReviewCard(review)
+            }
+
+            // Only show the toggle if there are more than 3 reviews
+            if (reviews.size > 3) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = if (expanded) "Show less" else "Show more",
+                    color = colorResource(R.color.dark_blue),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .clickable { expanded = !expanded }
+                        .padding(vertical = 4.dp)
+                )
             }
         }
     }
@@ -737,7 +881,7 @@ fun ReviewCard(review: Review) {
 
             ExpandableText(
                 text = review.content ?: "",
-                collapsedMaxLength = 250
+                minimizedMaxLines = 5
             )
         }
     }
@@ -749,24 +893,27 @@ fun ExpandableText(
     text: String,
     modifier: Modifier = Modifier,
     fontFamily: FontFamily = FontFamily.Default,
-    collapsedMaxLength: Int = 250,
+    minimizedMaxLines: Int = 3, // 👈 use lines instead of characters
     expandText: String = "Show more",
     collapseText: String = "Show less",
     linkColor: Color = colorResource(R.color.dark_blue)
 ) {
     var expanded by remember { mutableStateOf(false) }
-
-    val displayedText = remember(text, expanded) {
-        if (!expanded && text.length > collapsedMaxLength)
-            text.take(collapsedMaxLength) + "..."
-        else text
-    }
+    var isTextOverflowing by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
         Text(
-            text = displayedText,
+            text = text,
+            maxLines = if (expanded) Int.MAX_VALUE else minimizedMaxLines,
+            overflow = TextOverflow.Ellipsis,
+            fontFamily = fontFamily,
+            onTextLayout = { textLayoutResult ->
+                // Detect if text doesn't fit in given maxLines
+                isTextOverflowing = textLayoutResult.hasVisualOverflow
+            }
         )
-        if (text.length > collapsedMaxLength) {
+
+        if (isTextOverflowing || expanded) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = if (expanded) collapseText else expandText,

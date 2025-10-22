@@ -33,6 +33,8 @@ data class DetailMediaItemDto(
     val first_air_date: String? = null,
     val origin_country: List<String>? = null,
     val number_of_seasons: Int?= null,
+    val seasons: List<Season>? = null,
+
 
     // Person-specific
     val known_for_department: String? = null,
@@ -106,6 +108,7 @@ fun DetailMediaItemDto.toDomain(): DetailMediaItem {
         name = name,
         original_name = original_name,
         first_air_date = first_air_date,
+        seasons=seasons,
         origin_country = origin_country,
         known_for_department = known_for_department,
         profile_path = profile_path,

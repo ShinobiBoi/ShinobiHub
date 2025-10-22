@@ -4,6 +4,7 @@ import com.example.composeshinobicima.appcore.data.model.genre.Genre
 import com.example.composeshinobicima.appcore.data.model.movie.MediaItemDto
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.appcore.domain.model.MediaType
+import com.example.composeshinobicima.features.detail.data.model.detailitem.Season
 
 data class DetailMediaItem(
     val id: Int,
@@ -37,6 +38,8 @@ data class DetailMediaItem(
     val first_air_date: String? = null,
     val origin_country: List<String>? = null,
     val number_of_seasons: Int?= null,
+    val seasons: List<Season>? = null,
+
 
     // Person-specific
     val known_for_department: String? = null,
