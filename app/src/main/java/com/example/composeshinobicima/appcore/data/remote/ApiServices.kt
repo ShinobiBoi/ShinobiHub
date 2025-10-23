@@ -228,9 +228,16 @@ interface ApiServices {
 
 
 
-    //Discover////////////////////////////////////
+    //Discover///////////////////////////////////////////////
     @GET("discover/movie")
-    suspend fun getGenreWiseMovieList(
+    suspend fun getMovieDiscover(
+        @Query("with_genres") genresId: String,
+        @Query("page") page: Int = 1,
+        @Query("api_key") apiKey: String = API_KEY,
+    ): Response<MediaResponse>
+
+    @GET("discover/tv")
+    suspend fun getTvDiscover(
         @Query("with_genres") genresId: String,
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = API_KEY,

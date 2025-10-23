@@ -1,7 +1,6 @@
 package com.example.composeshinobicima.features.detail.presentaion.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -23,8 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -63,15 +59,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.composeshinobicima.R
-import com.example.composeshinobicima.appcore.components.SmallPosterItem
 import com.example.composeshinobicima.appcore.components.PosterList
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
-import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
 import com.example.composeshinobicima.features.detail.data.model.review.Review
 import com.example.composeshinobicima.features.detail.data.model.video.VideoItem
 import com.example.composeshinobicima.features.detail.domain.constants.DetailTab
 import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
+import com.example.composeshinobicima.features.detail.presentaion.components.creditlist.CreditsList
+import com.example.composeshinobicima.features.detail.presentaion.components.expandabletext.ExpandableText
+import com.example.composeshinobicima.features.detail.presentaion.components.header.MediaHeader
+import com.example.composeshinobicima.features.detail.presentaion.components.header.PeopleHeader
+import com.example.composeshinobicima.features.detail.presentaion.components.reviewslist.ReviewsList
+import com.example.composeshinobicima.features.detail.presentaion.components.seasonlist.SeasonsList
+import com.example.composeshinobicima.features.detail.presentaion.components.youtubeplayer.YouTubePlayer
 
 import com.example.composeshinobicima.features.detail.presentaion.viewmodel.DetailActions
 import com.example.composeshinobicima.features.detail.presentaion.viewmodel.DetailViewModel
@@ -167,12 +168,12 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                 modifier = Modifier
                     .fillMaxSize()
                     // Offset makes poster overlap halfway over the backdrop
-                    .padding(top = backdropHeight - (posterHeight * 0.35f))
+                    .padding(top = if(mediaType != MediaType.People)(backdropHeight - (posterHeight * 0.35f)) else 0.dp)
 
             ) {
                 if (mediaType == MediaType.People) {
                     mediaItem?.let {
-                        PeopleHeader(posterHeight, mediaItem, mediaType)
+                        PeopleHeader(posterHeight, mediaItem)
 
                     }
                 } else {
@@ -296,7 +297,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
 
 
                                 state.videoList.data?.forEach {
-                                    NativeYouTubePlayer(video = it)
+                                    YouTubePlayer(video = it)
                                 }
 
                                 state.similar.data?.let {
@@ -400,317 +401,6 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
 
 
 @Composable
-fun CreditsList(creditsResponse: CreditsResponse, onItemClick: (Int, MediaType) -> Unit) {
-
-
-    creditsResponse.cast?.let {
-        Text(
-            modifier = Modifier.padding(top = 32.dp, start = 18.dp),
-            text = "Cast",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
-        ) {
-
-
-            items(creditsResponse.cast.filter {
-                !it?.profile_path.isNullOrEmpty()
-            }) { cast ->
-
-                SmallPosterItem(
-                    cast?.name,
-                    cast?.profile_path,
-                    MediaType.People,
-                    cast?.id!!
-                ) { id, type ->
-                    onItemClick(id, type)
-
-                }
-            }
-        }
-    }
-
-    if (!creditsResponse.crew.isNullOrEmpty()) {
-
-        Text(
-            modifier = Modifier.padding(top = 32.dp, start = 18.dp),
-            text = "Crew",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
-        ) {
-
-            items(creditsResponse.crew) { crew ->
-                    SmallPosterItem(crew?.name, crew?.profile_path,MediaType.People,crew?.id?:0){id,type ->
-                        onItemClick(id,type)
-                }
-            }
-        }
-
-    }
-}
-
-@Composable
-fun SeasonsList(seasons: List<com.example.composeshinobicima.features.detail.data.model.detailitem.Season>) {
-    var expanded by remember { mutableStateOf(false) }
-    val itemsToShow = if (expanded) seasons else seasons.take(5)
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        itemsToShow.forEach { season ->
-            SeasonItem(season)
-        }
-
-        // Only show the toggle if there are more than 3 seasons
-        if (seasons.size > 5) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = if (expanded) "Show less" else "Show more",
-                color = colorResource(R.color.dark_blue),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable { expanded = !expanded }
-                    .padding(vertical = 4.dp)
-            )
-        }
-    }
-}
-
-
-
-@Composable
-fun SeasonItem(season: com.example.composeshinobicima.features.detail.data.model.detailitem.Season) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.off_white)),
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, Color.LightGray),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        ) {
-            // Poster image
-            AsyncImage(
-                model = "https://image.tmdb.org/t/p/w500${season.poster_path}",
-                contentDescription = season.name,
-                modifier = Modifier
-                    .size(width = 100.dp, height = 140.dp)
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            // Season info
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(
-                    text = season.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
-
-                Text(
-                    text = "Episodes: ${season.episode_count}",
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-
-                if (season.overview.isNotEmpty()) {
-                    ExpandableText(
-                        modifier = Modifier.padding(top = 6.dp),
-                        text = season.overview,
-                        minimizedMaxLines=4
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-
-
-
-@Composable
-fun MediaHeader(posterHeight: Dp, mediaItem: DetailMediaItem?, mediaType: MediaType) {
-
-
-    Row(modifier = Modifier.padding(horizontal = 18.dp)) {
-        // Poster
-        Card(
-            modifier = Modifier
-                .width(140.dp)
-                .height(posterHeight),
-            shape = RoundedCornerShape(10.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-            border = BorderStroke(2.dp, Color.White)
-
-        ) {
-            AsyncImage(
-                model = "https://image.tmdb.org/t/p/original${mediaItem?.resolvedPoster ?: ""}",
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-            )
-        }
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Column(modifier = Modifier.padding(top = (posterHeight * 0.35f))) {
-
-            Text(
-                modifier = Modifier.padding(top = 8.dp),
-                text = mediaItem?.resolvedTilte ?: "",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-
-            Text(
-                modifier = Modifier,
-                //.padding(top = 8.dp),
-                text = (mediaItem?.resolvedDate?.split("-")?.getOrNull(0)
-                    ?: "") +
-                        " ‧ " + (mediaItem?.genres?.getOrNull(0)?.name
-                    ?: "")
-                        + " ‧ " + (if (mediaType == MediaType.Movies) mediaItem?.runtime.toString() + " min" else if (mediaType == MediaType.Tv) mediaItem?.number_of_seasons.toString() + " Seasons" else {
-                }),
-                color = Color.Gray
-            )
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.tmdb),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(45.dp, 16.dp)
-                        .background(colorResource(R.color.dark_blue))
-                        .padding(horizontal = 3.dp)
-
-                )
-
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text =
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Black)) {
-                            append(
-                                String.format(
-                                    "%.1f",
-                                    mediaItem?.vote_average
-                                )
-                            )
-                        }
-                        withStyle(style = SpanStyle(color = Color.Gray)) {
-                            append("/10.0")
-                        }
-                    }
-                )
-
-
-            }
-            Text(
-                modifier = Modifier.padding(top = 8.dp),
-                text = "Original language ${mediaItem?.original_language ?: ""}",
-                color = Color.Gray
-            )
-
-        }
-
-
-    }
-
-}
-
-
-@Composable
-fun PeopleHeader(posterHeight: Dp, mediaItem: DetailMediaItem?, mediaType: MediaType) {
-
-
-    Row(modifier = Modifier.padding(horizontal = 18.dp)) {
-        // Poster
-        Card(
-            modifier = Modifier
-                .width(140.dp)
-                .height(posterHeight),
-            shape = RoundedCornerShape(10.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-            border = BorderStroke(2.dp, Color.White)
-
-        ) {
-            AsyncImage(
-                model = "https://image.tmdb.org/t/p/original${mediaItem?.resolvedPoster}",
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-            )
-        }
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Column(modifier = Modifier.padding(top = (posterHeight * 0.35f))) {
-
-            Text(
-                modifier = Modifier.padding(top = 8.dp),
-                text = mediaItem?.resolvedTilte ?: "",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-
-            Text(
-                modifier = Modifier,
-                //.padding(top = 8.dp),
-                text = "Born at: ${mediaItem?.birthday}",
-                color = Color.Gray
-            )
-
-            Text(
-
-                text = "Known for: ${mediaItem?.known_for_department}",
-                color = Color.Gray
-            )
-
-        }
-
-
-    }
-
-}
-
-
-@Composable
 fun TabItem(
     label: String,
     isSelected: Boolean,
@@ -736,196 +426,5 @@ fun TabItem(
     }
 }
 
-
-@Composable
-fun NativeYouTubePlayer(
-    video: VideoItem,
-) {
-
-    if (video.site == "YouTube" && video.type == "Trailer" && !video.id.isNullOrEmpty()) {
-
-
-        Text(
-            modifier = Modifier.padding(top = 32.dp, start = 18.dp, end = 18.dp),
-            text = video.name!!,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-
-        )
-
-        AndroidView(
-            modifier = Modifier
-                .padding(top = 8.dp, start = 18.dp, end = 18.dp)
-                .fillMaxWidth()
-                .height(220.dp),
-            factory = { ctx ->
-                YouTubePlayerView(ctx).apply {
-                    // For Lifecycle-aware behavior:
-                    (ctx as? ComponentActivity)?.lifecycle?.addObserver(this)
-
-                    addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-                        override fun onReady(youTubePlayer: YouTubePlayer) {
-                            // loadVideo expects (videoId, startSeconds)
-
-                            youTubePlayer.cueVideo(video.key, 0f)
-                        }
-                    })
-                }
-            }
-        )
-    }
-}
-
-
-@Composable
-fun ReviewsList(
-    reviews: List<Review>?,
-    modifier: Modifier = Modifier
-) {
-
-
-    if (reviews.isNullOrEmpty()) {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(vertical = 40.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "No reviews yet.",
-                color = Color.Gray,
-                fontSize = 14.sp,
-                fontFamily = poppinsFamily
-            )
-        }
-    } else {
-        var expanded by remember { mutableStateOf(false) }
-        val itemsToShow = if (expanded) reviews else reviews.take(3)
-
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            itemsToShow.forEach { review ->
-                ReviewCard(review)
-            }
-
-            // Only show the toggle if there are more than 3 reviews
-            if (reviews.size > 3) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = if (expanded) "Show less" else "Show more",
-                    color = colorResource(R.color.dark_blue),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .clickable { expanded = !expanded }
-                        .padding(vertical = 4.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ReviewCard(review: Review) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.off_white)),
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, Color.LightGray),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(50))
-                        .background(colorResource(R.color.dark_blue)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    val initials = review.author?.take(1)?.uppercase() ?: "?"
-                    Text(
-                        text = initials,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    )
-                }
-
-                Column {
-                    Text(
-                        text = review.author ?: "Unknown",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color.Black
-                    )
-                    Text(
-                        text = review.created_at?.substringBefore("T") ?: "",
-                        fontSize = 12.sp,
-                        color = Color.Gray
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            ExpandableText(
-                text = review.content ?: "",
-                minimizedMaxLines = 5
-            )
-        }
-    }
-}
-
-
-@Composable
-fun ExpandableText(
-    text: String,
-    modifier: Modifier = Modifier,
-    fontFamily: FontFamily = FontFamily.Default,
-    minimizedMaxLines: Int = 3, // 👈 use lines instead of characters
-    expandText: String = "Show more",
-    collapseText: String = "Show less",
-    linkColor: Color = colorResource(R.color.dark_blue)
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var isTextOverflowing by remember { mutableStateOf(false) }
-
-    Column(modifier = modifier) {
-        Text(
-            text = text,
-            maxLines = if (expanded) Int.MAX_VALUE else minimizedMaxLines,
-            overflow = TextOverflow.Ellipsis,
-            fontFamily = fontFamily,
-            onTextLayout = { textLayoutResult ->
-                // Detect if text doesn't fit in given maxLines
-                isTextOverflowing = textLayoutResult.hasVisualOverflow
-            }
-        )
-
-        if (isTextOverflowing || expanded) {
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = if (expanded) collapseText else expandText,
-                color = linkColor,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .clickable { expanded = !expanded }
-                    .padding(vertical = 2.dp)
-            )
-        }
-    }
-}
 
 
