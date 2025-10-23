@@ -1,5 +1,6 @@
 package com.example.composeshinobicima.features.home.presentaion.compoents
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,7 +26,8 @@ import com.example.composeshinobicima.R
 import com.example.composeshinobicima.features.home.data.model.GenreIconListItem
 
 @Composable
-fun HomeGenreList() {
+fun HomeGenreList(onCardClick:(Int)->Unit) {
+
 
     val genreList = listOf(
         GenreIconListItem(35, "Comedy", R.drawable.ic_comedy),
@@ -48,10 +50,14 @@ fun HomeGenreList() {
 
 
             Card(
-                modifier = Modifier.size(90.dp),
+                modifier = Modifier.size(90.dp).clickable(onClick = {
+                    onCardClick(genre.id)
+
+                }),
                 shape = RoundedCornerShape(15.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                 colors = CardDefaults.cardColors(containerColor = colorResource(R.color.off_white))
+
                 //backgroundColor = Color(0xFFFAFAFA)
             ) {
                 Column(

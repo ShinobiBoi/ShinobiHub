@@ -18,7 +18,7 @@ sealed class FindResult :Result<FindViewState> {
     }
 
 
-    data class Type(val state: CommonViewState<MediaType>) : FindResult(){
+    data class Type(val state:MediaType) : FindResult(){
         override fun reduce(defaultState: FindViewState, oldState: FindViewState): FindViewState {
             return oldState.copy(
                 mediaType = state

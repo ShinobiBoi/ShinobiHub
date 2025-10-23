@@ -1,5 +1,6 @@
 package com.example.composeshinobicima.features.discover.data.remote
 
+import android.util.Log
 import com.example.composeshinobicima.appcore.data.mappers.toDataState
 import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
 import com.example.composeshinobicima.appcore.data.remote.ApiServices

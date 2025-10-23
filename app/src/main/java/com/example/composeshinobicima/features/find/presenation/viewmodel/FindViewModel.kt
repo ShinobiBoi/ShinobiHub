@@ -3,6 +3,7 @@ package com.example.composeshinobicima.features.find.presenation.viewmodel
 import com.example.composeshinobicima.appcore.data.model.genre.Genre
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.domain.usecase.GetGenreListUseCase
 import com.example.composeshinobicima.appcore.domain.usecase.GetTrendingAllUseCase
 import com.example.composeshinobicima.appcore.domain.usecase.GetTrendingMoviesUseCase
@@ -53,7 +54,7 @@ class FindViewModel @Inject constructor(
             }
 
             is FindAction.ChangeMediaType -> {
-                emit(FindResult.Type(CommonViewState(data = action.type)))
+                emit(FindResult.Type( action.type))
             }
 
             is FindAction.ChangeQuery -> {
@@ -109,7 +110,21 @@ class FindViewModel @Inject constructor(
                     searchPeopleUseCase(action.query, it)
                 }
             }
+            is FindAction.ClearFilters ->{
+                handleClearFilter(this)
+            }
         }
+    }
+
+    private suspend fun handleClearFilter(flowCollector: FlowCollector<FindResult>) {
+
+        val updatedGenres =viewStates.value.genres.data?.map {
+          it.copy(selected = false)
+        }
+
+        flowCollector.emit(FindResult.GenreList(CommonViewState(data = updatedGenres)))
+        flowCollector.emit(FindResult.Type(MediaType.All))
+
     }
 
 

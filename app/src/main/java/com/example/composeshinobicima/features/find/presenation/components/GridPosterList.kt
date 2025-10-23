@@ -16,15 +16,14 @@ import com.example.composeshinobicima.appcore.domain.model.MediaType
 
 @Composable
 fun GridPosterList(
+    modifier: Modifier=Modifier,
     posters: List<MediaItem>,
     onItemClick: (Int,MediaType) -> Unit
 ) {
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 30.dp, start = 13.dp, end = 13.dp),
+        modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

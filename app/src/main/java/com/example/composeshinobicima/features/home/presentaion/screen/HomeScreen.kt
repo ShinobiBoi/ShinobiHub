@@ -106,14 +106,6 @@ fun HomeScreen(controller: NavController) {
             }
 
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-
-
-            }
 
             state.trendingAll.data?.let {
                 TrendingMovieBannerPager(it.subList(0, 8),pagerState)
@@ -127,7 +119,9 @@ fun HomeScreen(controller: NavController) {
                 modifier = Modifier.padding(start = 13.dp, top = 10.dp)
             )
 
-            HomeGenreList()
+            HomeGenreList(){
+                controller.navigate(ScreenResources.DiscoverScreenRoute(it))
+            }
 
 
 

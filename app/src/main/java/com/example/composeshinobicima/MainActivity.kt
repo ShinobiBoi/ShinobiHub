@@ -23,6 +23,7 @@ import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.detail.presentaion.screen.MediaDetailScreen
+import com.example.composeshinobicima.features.discover.presentaion.screen.DiscoverScreen
 import com.example.composeshinobicima.features.home.presentaion.screen.HomeScreen
 import com.example.composeshinobicima.features.find.presenation.screen.FindScreen
 import com.example.composeshinobicima.ui.theme.ComposeShinobiCimaTheme
@@ -51,7 +52,7 @@ class MainActivity: ComponentActivity() {
 
                 Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
 
-                    if (currentRoute !is ScreenResources.DetailScreenRoute){
+                    if (currentRoute !is ScreenResources.DetailScreenRoute && currentRoute !is ScreenResources.DiscoverScreenRoute){
                         CustomBottomNavigationBar(currentRoute) { selectedRoute ->
                             if (selectedRoute != currentRoute) {
                                 bottomNavViewModel.onRouteSelected(selectedRoute)
@@ -89,6 +90,10 @@ class MainActivity: ComponentActivity() {
                                 args.id,
                                 args.mediaType,navController
                             )
+                        }
+                        composable<ScreenResources.DiscoverScreenRoute>{
+                            val args = it.toRoute<ScreenResources.DiscoverScreenRoute>()
+                            DiscoverScreen(navController,args.genreId)
                         }
 
                         composable<ScreenResources.ProfileScreenRoute> { }

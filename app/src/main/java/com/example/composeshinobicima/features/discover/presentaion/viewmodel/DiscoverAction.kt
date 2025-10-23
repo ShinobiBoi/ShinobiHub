@@ -11,8 +11,7 @@ sealed class DiscoverAction : Action {
     data class GetDiscoverTv(val genreId: String) : DiscoverAction()
     data class ChangeMediaType(val type: MediaType) : DiscoverAction()
     object GetGenreList:DiscoverAction()
-    data class ToggleGenre(val genre: Genre):DiscoverAction()
-
-
+    data class ToggleGenre(val genreId: Int):DiscoverAction()
+    object ClearFilters:DiscoverAction()
 
 }

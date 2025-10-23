@@ -17,4 +17,5 @@ sealed class FindAction() : Action {
     data class GetTrendingPeople(val filterList:List<Genre>) : FindAction()
     object GetGenreList:FindAction()
     data class ToggleGenre(val genre: Genre):FindAction()
+    object ClearFilters:FindAction()
 }

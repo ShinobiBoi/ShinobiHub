@@ -8,7 +8,7 @@ import com.example.composeshinobicima.appcore.mvi.ViewState
 
 data class DiscoverViewState(
     val genres: CommonViewState<List<Genre>> = CommonViewState(),
-    val mediaType: CommonViewState<MediaType> = CommonViewState(data = MediaType.All),
     val media:MediaViewState = CommonViewState(),
+    val mediaType:MediaType=MediaType.Movies,
     val isLoading:Boolean=false
 ):ViewState
