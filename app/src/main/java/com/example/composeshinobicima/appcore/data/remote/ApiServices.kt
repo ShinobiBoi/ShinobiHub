@@ -6,12 +6,50 @@ import com.example.composeshinobicima.features.detail.data.model.credits.Credits
 import com.example.composeshinobicima.features.detail.data.model.detailitem.DetailMediaItemDto
 import com.example.composeshinobicima.features.detail.data.model.review.ReviewResponse
 import com.example.composeshinobicima.features.detail.data.model.video.VideoResponse
+import com.example.composeshinobicima.features.login.data.model.login.LoginRequest
+import com.example.composeshinobicima.features.login.data.model.login.LoginResponse
+import com.example.composeshinobicima.features.login.data.model.session.SessionRequest
+import com.example.composeshinobicima.features.login.data.model.session.SessionResponse
+import com.example.composeshinobicima.features.login.data.model.token.TokenResponse
 import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiServices {
+
+
+
+    //AUTH////////////////////////////////////////////////
+
+
+
+    @POST("authentication/token/validate_with_login")
+    suspend fun validateWithLogin(
+        @Body body: LoginRequest,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<LoginResponse>
+
+
+    @POST("authentication/session/new")
+    suspend fun createSession(
+        @Body body: SessionRequest,
+        @Query("api_key") key: String = API_KEY
+    ): Response<SessionResponse>
+
+    @DELETE("authentication/session")
+    suspend fun deleteSession(
+        @Body body: SessionRequest,
+        @Query("api_key") key: String = API_KEY
+    ): Response<SessionResponse>
+
+    @GET("authentication/token/new")
+    suspend fun createRequestToken(
+        @Query("api_key") key: String = API_KEY
+    ): Response<TokenResponse>
 
 
     //TRENDING////////////////////////////////////////////
@@ -249,3 +287,28 @@ interface ApiServices {
     }
 
 }
+
+/*
+data class LoginRequest(
+    val username:String,
+    val password :String,
+    val request_token :String
+)
+
+data class LoginResponse(
+    val success:Boolean,
+    val expires_at :String,
+    val request_token:String,
+)
+
+data class SessionRequest(
+    val request_token:String,
+)
+
+data class SessionResponse(
+    val success:Boolean,
+    val session_id:String,
+)
+*/
+
+

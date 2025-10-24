@@ -1,5 +1,8 @@
 package com.example.composeshinobicima.features.home.presentaion.viewmodel
 
+import android.util.Log
+import androidx.lifecycle.viewModelScope
+import com.example.composeshinobicima.appcore.data.local.SessionManager
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.mvi.MVIBaseViewModel
 import com.example.composeshinobicima.appcore.domain.usecase.*
@@ -9,7 +12,9 @@ import com.example.composeshinobicima.features.home.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +28,8 @@ class HomeViewModel @Inject constructor(
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
     private val getOnTheAirTvUseCase: GetOnTheAirTvUseCase,
     private val getPopularTvUseCase: GetPopularTvUseCase,
-    private val getTopRatedTvUseCase: GetTopRatedTvUseCase
+    private val getTopRatedTvUseCase: GetTopRatedTvUseCase,
+    private val sessionManager: SessionManager
 ) : MVIBaseViewModel<HomeAction, HomeResult, HomeViewState>() {
 
     override val defaultViewState: HomeViewState
@@ -77,6 +83,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
 
     // ---------------------
     // Trending Handlers

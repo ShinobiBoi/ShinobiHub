@@ -37,3 +37,7 @@ val Typography = Typography(
 val poppinsFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),
 )
+
+val germaniaOneFamily= FontFamily(
+    Font(R.font.germaniaone_regular, FontWeight.Normal),
+)

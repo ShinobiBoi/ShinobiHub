@@ -52,6 +52,7 @@ dependencies {
 
     implementation(libs.core)
 
+    implementation (libs.androidx.datastore.preferences)
 
 
     implementation(libs.androidx.foundation) // or latest

@@ -1,6 +1,9 @@
 package com.example.composeshinobicima.features.find.presenation.viewmodel
 
+import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.example.composeshinobicima.appcore.data.model.genre.Genre
+import com.example.composeshinobicima.appcore.data.remote.ApiServices
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.appcore.domain.model.MediaType
@@ -23,6 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -36,7 +40,8 @@ class FindViewModel @Inject constructor(
     val searchMovieUseCase: SearchMovieUseCase,
     val searchTvUseCase: SearchTvUseCase,
     val searchPeopleUseCase: SearchPeopleUseCase,
-    val getGenreListUseCase: GetGenreListUseCase
+    val getGenreListUseCase: GetGenreListUseCase,
+    val apiServices: ApiServices
     ) : MVIBaseViewModel<FindAction, FindResult, FindViewState>() {
     override val defaultViewState: FindViewState
         get() = FindViewState()
@@ -235,4 +240,5 @@ private suspend fun handleNewMedia(
             )
         )
     }
+
 }

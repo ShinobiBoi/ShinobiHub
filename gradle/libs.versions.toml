@@ -1,6 +1,7 @@
 [versions]
 agp = "8.8.1"
 core = "12.1.0"
+datastorePreferences = "1.1.7"
 foundation = "1.9.3"
 kotlin = "2.0.0"
 coreKtx = "1.10.1"
@@ -32,6 +33,7 @@ mockk = "1.13.12"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 core = { module = "com.pierfrancescosoffritti.androidyoutubeplayer:core", version.ref = "core" }

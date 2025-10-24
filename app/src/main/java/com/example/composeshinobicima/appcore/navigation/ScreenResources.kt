@@ -5,6 +5,25 @@ import kotlinx.serialization.Serializable
 
 sealed class ScreenResources {
 
+
+    @Serializable
+    object AuthScreenRoute : ScreenResources()
+
+
+    @Serializable
+    object SplashScreenRoute : ScreenResources()
+
+
+    @Serializable
+    object LoginScreeRoute : ScreenResources()
+
+
+    @Serializable
+    object MainScreeRoute : ScreenResources()
+
+
+
+
     @Serializable
     object FindScreenRoute : ScreenResources()
 
