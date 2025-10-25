@@ -4,8 +4,12 @@ import com.example.composeshinobicima.appcore.data.model.genre.GenreResponse
 import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
 import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
 import com.example.composeshinobicima.features.detail.data.model.detailitem.DetailMediaItemDto
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkRequest
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkResponse
 import com.example.composeshinobicima.features.detail.data.model.review.ReviewResponse
+import com.example.composeshinobicima.features.detail.data.model.status.AccountStatesResponse
 import com.example.composeshinobicima.features.detail.data.model.video.VideoResponse
+import com.example.composeshinobicima.features.home.data.model.account.AccountResponse
 import com.example.composeshinobicima.features.login.data.model.login.LoginRequest
 import com.example.composeshinobicima.features.login.data.model.login.LoginResponse
 import com.example.composeshinobicima.features.login.data.model.session.SessionRequest
@@ -25,6 +29,10 @@ interface ApiServices {
 
     //AUTH////////////////////////////////////////////////
 
+    @GET("authentication/token/new")
+    suspend fun createRequestToken(
+        @Query("api_key") key: String = API_KEY
+    ): Response<TokenResponse>
 
 
     @POST("authentication/token/validate_with_login")
@@ -46,10 +54,76 @@ interface ApiServices {
         @Query("api_key") key: String = API_KEY
     ): Response<SessionResponse>
 
-    @GET("authentication/token/new")
-    suspend fun createRequestToken(
+    @GET("account")
+    suspend fun getAccount(
+        @Query ("session_id") sessionId: String,
         @Query("api_key") key: String = API_KEY
-    ): Response<TokenResponse>
+    ): Response<AccountResponse>
+
+
+    //ACCOUNT ACTIONS//////////////////////////////////////////////
+
+    @POST("account/{account_id}/watchlist")
+    suspend fun toggleWatchlist(
+        @Path("account_id") accountId: Int,
+        @Query("session_id") sessionId: String,
+        @Body body: MarkRequest,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MarkResponse>
+
+
+    @POST("account/{account_id}/favorite")
+    suspend fun toggleFavorite(
+        @Path("account_id") accountId: Int,
+        @Query("session_id") sessionId: String,
+        @Body body: MarkRequest,
+        @Query("api_key") key: String = API_KEY,
+    ): Response<MarkResponse>
+
+
+    @GET("account/{account_id}/favorite/movies")
+    suspend fun getFavoriteMovies(
+        @Path("account_id") accountId: Int,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") key: String = API_KEY
+    ): Response<MediaResponse>
+
+    @GET("account/{account_id}/favorite/tv")
+    suspend fun getFavoriteTv(
+        @Path("account_id") accountId: Int,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") key: String = API_KEY
+    ): Response<MediaResponse>
+
+    @GET("account/{account_id}/watchlist/movies")
+    suspend fun getWatchlistMovies(
+        @Path("account_id") accountId: Int,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") key: String = API_KEY
+    ): Response<MediaResponse>
+
+    @GET("account/{account_id}/watchlist/tv")
+    suspend fun getWatchlistTv(
+        @Path("account_id") accountId: Int,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") key: String = API_KEY
+    ): Response<MediaResponse>
+
+
+    @GET("movie/{movie_id}/account_states")
+    suspend fun getMovieAccountStates(
+        @Path("movie_id") movieId: Int,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") apiKey: String = API_KEY
+    ): Response<AccountStatesResponse>
+
+    @GET("tv/{tv_id}/account_states")
+    suspend fun getTvAccountStates(
+        @Path("tv_id") tvId: Int,
+        @Query("session_id") sessionId: String,
+        @Query("api_key") apiKey: String = API_KEY
+    ): Response<AccountStatesResponse>
+
 
 
     //TRENDING////////////////////////////////////////////

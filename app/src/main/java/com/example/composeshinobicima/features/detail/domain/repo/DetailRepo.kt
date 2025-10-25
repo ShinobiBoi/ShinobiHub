@@ -1,11 +1,12 @@
 package com.example.composeshinobicima.features.detail.domain.repo
 
-import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkRequest
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkResponse
 import com.example.composeshinobicima.features.detail.data.model.review.Review
-import com.example.composeshinobicima.features.detail.data.model.review.ReviewResponse
+import com.example.composeshinobicima.features.detail.data.model.status.AccountStatesResponse
 import com.example.composeshinobicima.features.detail.data.model.video.VideoItem
 import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
 
@@ -28,6 +29,13 @@ interface DetailRepo {
 
     suspend fun getMovieReview(movieId: Int):DataState<List<Review>>
     suspend fun getTvReview(seriesId: Int):DataState<List<Review>>
+
+
+    suspend fun getMovieAccountState(movieId: Int, sessionId: String): DataState<AccountStatesResponse>
+    suspend fun getTvAccountState(tvId: Int, sessionId: String): DataState<AccountStatesResponse>
+
+    suspend fun toggleFavorite(accountId: Int, body: MarkRequest, sessionId: String): DataState<MarkResponse>
+    suspend fun toggleWatchlist(accountId: Int, body: MarkRequest, sessionId: String): DataState<MarkResponse>
 
 
 

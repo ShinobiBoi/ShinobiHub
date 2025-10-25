@@ -1,47 +1,60 @@
 package com.example.composeshinobicima.features.detail.presentaion.viewmodel
 
 import android.util.Log
+import com.example.composeshinobicima.appcore.data.local.SessionManager
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.MVIBaseViewModel
 import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkResponse
 import com.example.composeshinobicima.features.detail.data.model.review.Review
+import com.example.composeshinobicima.features.detail.data.model.status.AccountStatesResponse
 import com.example.composeshinobicima.features.detail.data.model.video.VideoItem
 import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
 import com.example.composeshinobicima.features.detail.domain.usecase.GetDetailMovieUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetDetailPersonUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetDetailTvUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetMovieAccountStateUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetMovieCreditsUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetMovieReviewsUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetMovieVideoUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetMoviesSimilarUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetPeopleCreditsUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.GetTvAccountStateUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetTvCreditsUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetTvReviewsUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetTvSimilarUseCase
 import com.example.composeshinobicima.features.detail.domain.usecase.GetTvVideoUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.ToggleFavoriteUseCase
+import com.example.composeshinobicima.features.detail.domain.usecase.ToggleWatchlistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    val getDetailMovieUseCase: GetDetailMovieUseCase,
-    val getDetailTvUseCase: GetDetailTvUseCase,
-    val getDetailPersonUseCase: GetDetailPersonUseCase,
-    val getMovieVideoUseCase: GetMovieVideoUseCase,
-    val getTvVideoUseCase: GetTvVideoUseCase,
-    val getMovieCreditsUseCase: GetMovieCreditsUseCase,
-    val getTvCreditsUseCase: GetTvCreditsUseCase,
-    val getPeopleCreditsUseCase: GetPeopleCreditsUseCase,
-    val getMoviesSimilarUseCase: GetMoviesSimilarUseCase,
-    val getTvSimilarUseCase: GetTvSimilarUseCase,
-    val getMovieReviewsUseCase: GetMovieReviewsUseCase,
-    val getTvReviewsUseCase: GetTvReviewsUseCase
+    private val getDetailMovieUseCase: GetDetailMovieUseCase,
+    private val getDetailTvUseCase: GetDetailTvUseCase,
+    private val getDetailPersonUseCase: GetDetailPersonUseCase,
+    private val getMovieVideoUseCase: GetMovieVideoUseCase,
+    private val getTvVideoUseCase: GetTvVideoUseCase,
+    private val getMovieCreditsUseCase: GetMovieCreditsUseCase,
+    private val getTvCreditsUseCase: GetTvCreditsUseCase,
+    private val getPeopleCreditsUseCase: GetPeopleCreditsUseCase,
+    private val getMoviesSimilarUseCase: GetMoviesSimilarUseCase,
+    private val getTvSimilarUseCase: GetTvSimilarUseCase,
+    private val getMovieReviewsUseCase: GetMovieReviewsUseCase,
+    private val getTvReviewsUseCase: GetTvReviewsUseCase,
+    private val getMovieAccountStateUseCase: GetMovieAccountStateUseCase,
+    private val getTvAccountStateUseCase: GetTvAccountStateUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val toggleWatchlistUseCase: ToggleWatchlistUseCase,
+    private val sessionManager: SessionManager
 ) : MVIBaseViewModel<DetailActions, DetailResults, DetailViewState>() {
 
     override val defaultViewState: DetailViewState
@@ -128,12 +141,129 @@ class DetailViewModel @Inject constructor(
 
             }
 
+            is DetailActions.GetSessionId->{
+                handleGetSessionId(this)
+            }
+            is DetailActions.GetMovieAccountState -> {
+                handleGetAccountState(this) {
+                    val sessionId = sessionManager.getSessionId().firstOrNull()
+                    if (sessionId != null)
+                        getMovieAccountStateUseCase(action.movieId, sessionId)
+                    else
+                        DataState.Error(Throwable("Session ID not found"))
+                }
+            }
 
+            is DetailActions.GetTvAccountState -> {
+                handleGetAccountState(this) {
+                    val sessionId = sessionManager.getSessionId().firstOrNull()
+                    if (sessionId != null)
+                        getTvAccountStateUseCase(action.tvId, sessionId)
+                    else
+                        DataState.Error(Throwable("Session ID not found"))
+                }
+            }
 
+            is DetailActions.ToggleFavorite -> {
+                handleToggleFavorite(this) {
+                    val sessionId = sessionManager.getSessionId().firstOrNull()
+                    val accountId = sessionManager.getAccountId().firstOrNull()
+                    if (sessionId != null && accountId != null)
+                        toggleFavoriteUseCase(accountId, action.markRequest, sessionId)
+                    else
+                        DataState.Error(Throwable("Missing session or account ID"))
+                }
+            }
 
-            else -> {}
+            is DetailActions.ToggleWatchList -> {
+                handleToggleWatchlist(this) {
+                    val sessionId = sessionManager.getSessionId().firstOrNull()
+                    val accountId = sessionManager.getAccountId().firstOrNull()
+                    if (sessionId != null && accountId != null)
+                        toggleWatchlistUseCase(accountId, action.markRequest, sessionId)
+                    else
+                        DataState.Error(Throwable("Missing session or account ID"))
+                }
+            }
+
 
         }
+
+    }
+
+    private suspend fun handleGetAccountState(
+        flowCollector: FlowCollector<DetailResults>,
+        getState: suspend () -> DataState<AccountStatesResponse>
+    ) {
+        flowCollector.emit(DetailResults.Loading(true))
+
+        when (val result = getState()) {
+            is DataState.Success -> {
+                val data = result.data
+                flowCollector.emit(DetailResults.AccountStateLoaded(
+                    favorite = data.favorite ,
+                    watchlist = data.watchlist
+                ))
+            }
+            is DataState.Error -> {
+                flowCollector.emit(DetailResults.AccountStateLoaded(false, false))
+            }
+            is DataState.Empty -> {
+                flowCollector.emit(DetailResults.AccountStateLoaded(false, false))
+            }
+            else -> {}
+        }
+
+        flowCollector.emit(DetailResults.Loading(false))
+    }
+    private suspend fun handleToggleFavorite(
+        flowCollector: FlowCollector<DetailResults>,
+        toggle: suspend () -> DataState<MarkResponse>
+    ) {
+        flowCollector.emit(DetailResults.Loading(true))
+
+        when (val result = toggle()) {
+            is DataState.Success -> {
+                val code = result.data.status_code
+                when (code) {
+                    1 -> flowCollector.emit(DetailResults.ToggleFavoriteResult(true, code))  // added
+                    8 -> flowCollector.emit(DetailResults.ToggleFavoriteResult(false, code)) // removed
+                    else -> flowCollector.emit(DetailResults.ToggleFavoriteResult(false, code))
+                }
+            }
+            is DataState.Error -> flowCollector.emit(DetailResults.ToggleFavoriteResult(false, -1))
+            else -> {}
+        }
+
+        flowCollector.emit(DetailResults.Loading(false))
+    }
+
+    private suspend fun handleToggleWatchlist(
+        flowCollector: FlowCollector<DetailResults>,
+        toggle: suspend () -> DataState<MarkResponse>
+    ) {
+        flowCollector.emit(DetailResults.Loading(true))
+
+        when (val result = toggle()) {
+            is DataState.Success -> {
+                val code = result.data.status_code
+                when (code) {
+                    1 -> flowCollector.emit(DetailResults.ToggleWatchlistResult(true, code))
+                    8 -> flowCollector.emit(DetailResults.ToggleWatchlistResult(false, code))
+                    else -> flowCollector.emit(DetailResults.ToggleWatchlistResult(false, code))
+                }
+            }
+            is DataState.Error -> flowCollector.emit(DetailResults.ToggleWatchlistResult(false, -1))
+            else -> {}
+        }
+
+        flowCollector.emit(DetailResults.Loading(false))
+    }
+
+
+    private suspend fun handleGetSessionId(flowCollector: FlowCollector<DetailResults>) {
+        val sessionId=sessionManager.getSessionId().firstOrNull()
+        flowCollector.emit(DetailResults.SessionIdLoaded(sessionId))
 
     }
 

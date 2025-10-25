@@ -11,104 +11,86 @@ import com.example.composeshinobicima.features.detail.domain.model.DetailMediaIt
 
 sealed class DetailResults : Result<DetailViewState> {
 
-
-    data class Loading(val state: Boolean) :DetailResults(){
-        override fun reduce(
-            defaultState: DetailViewState,
-            oldState: DetailViewState
-        ): DetailViewState {
-            return oldState.copy(
-                isLoading = state
-            )
+    data class Loading(val state: Boolean) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(isLoading = state)
         }
-
     }
 
-
     data class SwitchTab(val state: CommonViewState<DetailTab>) : DetailResults() {
-        override fun reduce(
-            defaultState: DetailViewState,
-            oldState: DetailViewState
-        ): DetailViewState {
-            return oldState.copy(
-                selectedTab = state
-            )
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(selectedTab = state)
         }
-
     }
 
     data class DetailMediaLoaded(val state: CommonViewState<DetailMediaItem>) : DetailResults() {
-        override fun reduce(
-            defaultState: DetailViewState, oldState: DetailViewState
-        ): DetailViewState {
-            return oldState.copy(
-                detailMediaItem = state
-            )
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(detailMediaItem = state)
         }
-
     }
 
     data class VideoList(val state: CommonViewState<List<VideoItem>>) : DetailResults() {
-        override fun reduce(
-            defaultState: DetailViewState,
-            oldState: DetailViewState
-        ): DetailViewState {
-            return oldState.copy(
-                videoList = state
-            )
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(videoList = state)
         }
-
     }
 
-    data class CreditsLoad(val state: CommonViewState<CreditsResponse>) : DetailResults(){
-        override fun reduce(
-            defaultState: DetailViewState,
-            oldState: DetailViewState
-        ): DetailViewState {
-            return oldState.copy(
-                credits = state
-            )
+    data class CreditsLoad(val state: CommonViewState<CreditsResponse>) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(credits = state)
         }
-
     }
 
-    data class PeopleCreditsLoad(val state: MediaViewState):DetailResults(){
-        override fun reduce(
-            defaultState: DetailViewState,
-            oldState: DetailViewState
-        ): DetailViewState {
-            return oldState.copy(
-                peopleCredits = state
-            )
+    data class PeopleCreditsLoad(val state: MediaViewState) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(peopleCredits = state)
         }
-
     }
 
-    data class SimilarLoad(val state: MediaViewState) : DetailResults(){
-        override fun reduce(
-            defaultState: DetailViewState,
-            oldState: DetailViewState
-        ): DetailViewState {
-            return oldState.copy(
-                similar = state
-            )
+    data class SimilarLoad(val state: MediaViewState) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(similar = state)
         }
-
     }
 
-    data class ReviewsLoad(val state: CommonViewState<List<Review>>) : DetailResults(){
-        override fun reduce(
-            defaultState: DetailViewState,
-            oldState: DetailViewState
-        ): DetailViewState {
-            return oldState.copy(
-                review = state
-            )
+    data class ReviewsLoad(val state: CommonViewState<List<Review>>) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(review = state)
         }
-
     }
 
+    data class SessionIdLoaded(val state: String?) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(sessionId = state)
+        }
+    }
 
+    // Account state now directly updates booleans in the view state
+    data class AccountStateLoaded(val favorite: Boolean, val watchlist: Boolean) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(
+                isFavorite = favorite,
+                isWatchlist = watchlist
+            )
+        }
+    }
 
+    // Toggle now updates only the relevant flag and stores the code
+    data class ToggleFavoriteResult(val isFavorite: Boolean, val code: Int) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(
+                isFavorite = isFavorite,
+                toggleCode = code
+            )
+        }
+    }
 
+    data class ToggleWatchlistResult(val isWatchlist: Boolean, val code: Int) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(
+                isWatchlist = isWatchlist,
+                toggleCode = code
+            )
+        }
+    }
 }

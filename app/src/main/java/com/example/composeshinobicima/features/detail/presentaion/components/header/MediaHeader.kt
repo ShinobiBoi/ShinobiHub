@@ -3,6 +3,8 @@ package com.example.composeshinobicima.features.detail.presentaion.components.he
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,14 +30,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.composeshinobicima.R
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
+import com.example.composeshinobicima.features.detail.presentaion.viewmodel.DetailViewState
 
 
 @Composable
-fun MediaHeader(posterHeight: Dp, mediaItem: DetailMediaItem?, mediaType: MediaType) {
+fun MediaHeader(posterHeight: Dp, mediaItem: DetailMediaItem?, mediaType: MediaType, state: DetailViewState,) {
 
 
     Row(modifier = Modifier.padding(horizontal = 18.dp)) {
@@ -112,11 +117,75 @@ fun MediaHeader(posterHeight: Dp, mediaItem: DetailMediaItem?, mediaType: MediaT
 
 
             }
-            Text(
-                modifier = Modifier.padding(top = 8.dp),
-                text = "Original language ${mediaItem?.original_language ?: ""}",
-                color = Color.Gray
-            )
+            if (state.sessionId != null) {
+            Row {
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    colors = CardDefaults.cardColors(containerColor = colorResource(R.color.light_gray)),
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ,
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                painter = painterResource(if (state.isWatchlist) R.drawable.ic_saved else R.drawable.ic_save),
+                                contentDescription = "save button",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                text = "Save",
+                                color = Color.Gray,
+                                modifier = Modifier.padding(start = 6.dp),
+                                fontSize = 15.sp
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    colors = CardDefaults.cardColors(containerColor = colorResource(R.color.light_gray)),
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ,
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                painter = painterResource(if (state.isFavorite) R.drawable.ic_saved else R.drawable.ic_save),
+                                contentDescription = "like button",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                text = "Like",
+                                color = Color.Gray,
+                                modifier = Modifier.padding(start = 6.dp),
+                                fontSize = 15.sp
+                            )
+                        }
+                    }
+                }
+            }
+
+
+            }
 
         }
 

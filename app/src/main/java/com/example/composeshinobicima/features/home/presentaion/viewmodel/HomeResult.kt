@@ -5,11 +5,12 @@ import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.MediaViewState
 import com.example.composeshinobicima.appcore.mvi.Result
+import com.example.composeshinobicima.features.home.data.model.account.AccountResponse
 
 sealed class HomeResult : Result<HomeViewState> {
 
 
-    data class Type(val state: CommonViewState<MediaType>) : HomeResult(){
+    data class Type(val state: CommonViewState<MediaType>) : HomeResult() {
         override fun reduce(defaultState: HomeViewState, oldState: HomeViewState): HomeViewState {
             return oldState.copy(
                 mediaType = state
@@ -19,7 +20,7 @@ sealed class HomeResult : Result<HomeViewState> {
     }
 
 
-    data class TrendingAllLoaded(val state: MediaViewState) : HomeResult(){
+    data class TrendingAllLoaded(val state: MediaViewState) : HomeResult() {
         override fun reduce(defaultState: HomeViewState, oldState: HomeViewState): HomeViewState {
             return oldState.copy(
                 trendingAll = state
@@ -28,7 +29,7 @@ sealed class HomeResult : Result<HomeViewState> {
 
     }
 
-    data class TrendingMoviesLoaded(val state: MediaViewState) : HomeResult(){
+    data class TrendingMoviesLoaded(val state: MediaViewState) : HomeResult() {
         override fun reduce(defaultState: HomeViewState, oldState: HomeViewState): HomeViewState {
             return oldState.copy(
                 trendingMovies = state
@@ -37,7 +38,7 @@ sealed class HomeResult : Result<HomeViewState> {
 
     }
 
-    data class TrendingTvLoaded(val state: MediaViewState) : HomeResult(){
+    data class TrendingTvLoaded(val state: MediaViewState) : HomeResult() {
         override fun reduce(defaultState: HomeViewState, oldState: HomeViewState): HomeViewState {
             return oldState.copy(
                 trendingTv = state
@@ -46,7 +47,7 @@ sealed class HomeResult : Result<HomeViewState> {
 
     }
 
-    data class TrendingPeopleLoaded(val state: MediaViewState) : HomeResult(){
+    data class TrendingPeopleLoaded(val state: MediaViewState) : HomeResult() {
         override fun reduce(defaultState: HomeViewState, oldState: HomeViewState): HomeViewState {
             return oldState.copy(
                 trendingPeople = state
@@ -76,7 +77,7 @@ sealed class HomeResult : Result<HomeViewState> {
         override fun reduce(defaultState: HomeViewState, oldState: HomeViewState): HomeViewState {
             return oldState.copy(
                 upComingMovies = state
-                )
+            )
         }
     }
 
@@ -103,6 +104,15 @@ sealed class HomeResult : Result<HomeViewState> {
                 topRatedTv = state
             )
         }
+    }
+
+    data class AccountedLoaded(val state: CommonViewState<AccountResponse>) : HomeResult() {
+        override fun reduce(defaultState: HomeViewState, oldState: HomeViewState): HomeViewState {
+            return oldState.copy(
+                account = state
+            )
+        }
+
     }
 
 }

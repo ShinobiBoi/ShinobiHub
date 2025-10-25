@@ -1,15 +1,18 @@
 package com.example.composeshinobicima.features.detail.data.remote
 
-import android.util.Log
 import com.example.composeshinobicima.appcore.data.mappers.toDataState
 import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
 import com.example.composeshinobicima.appcore.data.remote.ApiServices
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
 import com.example.composeshinobicima.features.detail.data.model.detailitem.DetailMediaItemDto
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkRequest
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkResponse
 import com.example.composeshinobicima.features.detail.data.model.review.ReviewResponse
+import com.example.composeshinobicima.features.detail.data.model.status.AccountStatesResponse
 import com.example.composeshinobicima.features.detail.data.model.video.VideoResponse
 import com.example.composeshinobicima.features.detail.domain.remote.DetailRemoteClient
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class DetailRemoteClientImp @Inject constructor(val api: ApiServices) :DetailRemoteClient {
@@ -62,5 +65,78 @@ class DetailRemoteClientImp @Inject constructor(val api: ApiServices) :DetailRem
        return api.getTvReviews(seriesId).toDataState()
     }
 
+    override suspend fun getMovieAccountState(
+        movieId: Int,
+        sessionId: String
+    ): DataState<AccountStatesResponse> {
+        return try {
+            val result = api.getMovieAccountStates(movieId, sessionId)
+            if (result.isSuccessful) {
+                result.body()?.let {
+                    DataState.Success(it)
+                } ?: DataState.Empty
+            } else {
+                DataState.Error(HttpException(result))
+            }
+        } catch (t: Throwable) {
+            DataState.Error(t)
+        }
+    }
+
+    override suspend fun getTvAccountState(
+        tvId: Int,
+        sessionId: String
+    ): DataState<AccountStatesResponse> {
+        return try {
+            val result = api.getTvAccountStates(tvId, sessionId)
+            if (result.isSuccessful) {
+                result.body()?.let {
+                    DataState.Success(it)
+                } ?: DataState.Empty
+            } else {
+                DataState.Error(HttpException(result))
+            }
+        } catch (t: Throwable) {
+            DataState.Error(t)
+        }
+    }
+
+    override suspend fun toggleFavorite(
+        accountId: Int,
+        body: MarkRequest,
+        sessionId: String
+    ): DataState<MarkResponse> {
+        return try {
+            val result = api.toggleFavorite(accountId,sessionId,body)
+            if (result.isSuccessful) {
+                result.body()?.let {
+                    DataState.Success(it)
+                } ?: DataState.Empty
+            } else {
+                DataState.Error(HttpException(result))
+            }
+        } catch (t: Throwable) {
+            DataState.Error(t)
+        }
+    }
+
+    override suspend fun toggleWatchlist(
+        accountId: Int,
+        body: MarkRequest,
+        sessionId: String
+    ): DataState<MarkResponse> {
+        return try {
+            val result = api.toggleWatchlist(accountId,sessionId,body)
+            if (result.isSuccessful) {
+                result.body()?.let {
+                    DataState.Success(it)
+                } ?: DataState.Empty
+            } else {
+                DataState.Error(HttpException(result))
+            }
+        } catch (t: Throwable) {
+            DataState.Error(t)
+        }
+    }
 
 }

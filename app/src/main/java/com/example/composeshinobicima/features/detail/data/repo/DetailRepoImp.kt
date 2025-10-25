@@ -6,7 +6,10 @@ import com.example.composeshinobicima.appcore.domain.model.MediaItem
 import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
 import com.example.composeshinobicima.features.detail.data.model.detailitem.DetailMediaItemDto
 import com.example.composeshinobicima.features.detail.data.model.detailitem.toDomain
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkRequest
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkResponse
 import com.example.composeshinobicima.features.detail.data.model.review.Review
+import com.example.composeshinobicima.features.detail.data.model.status.AccountStatesResponse
 import com.example.composeshinobicima.features.detail.data.model.video.VideoItem
 import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
 import com.example.composeshinobicima.features.detail.domain.remote.DetailRemoteClient
@@ -148,6 +151,52 @@ class DetailRepoImp @Inject constructor(val remote: DetailRemoteClient) : Detail
             else->{
                 DataState.Error(UnknownError())
             }
+        }
+    }
+
+    override suspend fun getMovieAccountState(
+        movieId: Int,
+        sessionId: String
+    ): DataState<AccountStatesResponse> {
+        return when (val result = remote.getMovieAccountState(movieId, sessionId)) {
+            is DataState.Success -> DataState.Success(result.data)
+            is DataState.Error -> DataState.Error(result.throwable)
+            else -> DataState.Error(UnknownError())
+        }
+    }
+
+    override suspend fun getTvAccountState(
+        tvId: Int,
+        sessionId: String
+    ): DataState<AccountStatesResponse> {
+        return when (val result = remote.getTvAccountState(tvId, sessionId)) {
+            is DataState.Success -> DataState.Success(result.data)
+            is DataState.Error -> DataState.Error(result.throwable)
+            else -> DataState.Error(UnknownError())
+        }
+    }
+
+    override suspend fun toggleFavorite(
+        accountId: Int,
+        body: MarkRequest,
+        sessionId: String
+    ): DataState<MarkResponse> {
+        return when (val result = remote.toggleFavorite(accountId, body, sessionId)) {
+            is DataState.Success -> DataState.Success(result.data)
+            is DataState.Error -> DataState.Error(result.throwable)
+            else -> DataState.Error(UnknownError())
+        }
+    }
+
+    override suspend fun toggleWatchlist(
+        accountId: Int,
+        body: MarkRequest,
+        sessionId: String
+    ): DataState<MarkResponse> {
+        return when (val result = remote.toggleWatchlist(accountId, body, sessionId)) {
+            is DataState.Success -> DataState.Success(result.data)
+            is DataState.Error -> DataState.Error(result.throwable)
+            else -> DataState.Error(UnknownError())
         }
     }
 

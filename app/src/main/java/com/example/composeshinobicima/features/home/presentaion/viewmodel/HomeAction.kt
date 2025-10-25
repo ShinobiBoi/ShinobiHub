@@ -16,4 +16,5 @@ sealed class HomeAction : Action {
     object GetOnTheAirTv : HomeAction()
     object GetPopularTv : HomeAction()
     object GetTopRatedTv : HomeAction()
+    object GetAccount:HomeAction()
 }

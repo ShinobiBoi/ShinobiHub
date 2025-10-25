@@ -1,7 +1,5 @@
 package com.example.composeshinobicima.features.home.presentaion.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.example.composeshinobicima.appcore.data.local.SessionManager
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.mvi.MVIBaseViewModel
@@ -14,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,11 +26,15 @@ class HomeViewModel @Inject constructor(
     private val getOnTheAirTvUseCase: GetOnTheAirTvUseCase,
     private val getPopularTvUseCase: GetPopularTvUseCase,
     private val getTopRatedTvUseCase: GetTopRatedTvUseCase,
+    private val getAccountUseCase: GetAccountUseCase,
     private val sessionManager: SessionManager
 ) : MVIBaseViewModel<HomeAction, HomeResult, HomeViewState>() {
 
+
+
     override val defaultViewState: HomeViewState
         get() = HomeViewState()
+
 
     override fun handleAction(action: HomeAction): Flow<HomeResult> = flow {
         when (action) {
@@ -81,6 +82,28 @@ class HomeViewModel @Inject constructor(
             is HomeAction.GetTopRatedTv -> {
                 handleGetTopRatedTv(this)
             }
+
+            is HomeAction.GetAccount->{
+                handleHetAccount(this,sessionManager.getSessionId().firstOrNull())
+            }
+        }
+    }
+
+    private suspend fun handleHetAccount(flowCollector: FlowCollector<HomeResult>, sessionId: String?) {
+
+        if (sessionId!=null)
+        when (val result = getAccountUseCase(sessionId)) {
+            is DataState.Success -> {
+                flowCollector.emit(HomeResult.AccountedLoaded(CommonViewState(data = result.data, isSuccess = true)))
+                sessionManager.saveAccountId(result.data.id!!)
+            }
+            is DataState.Error -> flowCollector.emit(
+                HomeResult.AccountedLoaded(CommonViewState(errorThrowable = result.throwable))
+            )
+            is DataState.Empty -> flowCollector.emit(
+                HomeResult.AccountedLoaded(CommonViewState(isEmpty = true))
+            )
+            else -> {}
         }
     }
 

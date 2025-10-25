@@ -17,5 +17,9 @@ data class DetailViewState(
     val peopleCredits:MediaViewState =CommonViewState(),
     val similar:MediaViewState =CommonViewState(),
     val review: CommonViewState<List<Review>> =CommonViewState(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isFavorite:Boolean = false,
+    val isWatchlist:Boolean = false,
+    val toggleCode:Int = 0,
+    val sessionId: String? = null
 ) : ViewState

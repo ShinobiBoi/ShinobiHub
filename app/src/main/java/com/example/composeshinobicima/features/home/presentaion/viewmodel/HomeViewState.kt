@@ -4,7 +4,7 @@ import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.ViewState
 import com.example.composeshinobicima.appcore.mvi.MediaViewState
-
+import com.example.composeshinobicima.features.home.data.model.account.AccountResponse
 
 
 data class HomeViewState(
@@ -19,4 +19,5 @@ data class HomeViewState(
     val onTheAirTv:MediaViewState=CommonViewState(),
     val popularTv:MediaViewState=CommonViewState(),
     val topRatedTv:MediaViewState=CommonViewState(),
+    val account:CommonViewState<AccountResponse> =CommonViewState()
 ) :ViewState

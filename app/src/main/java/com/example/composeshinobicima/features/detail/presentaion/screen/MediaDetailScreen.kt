@@ -1,7 +1,6 @@
 package com.example.composeshinobicima.features.detail.presentaion.screen
 
 import android.annotation.SuppressLint
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,14 +12,13 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -33,9 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,15 +41,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Dp
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -62,24 +52,17 @@ import com.example.composeshinobicima.R
 import com.example.composeshinobicima.appcore.components.PosterList
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
-import com.example.composeshinobicima.features.detail.data.model.review.Review
-import com.example.composeshinobicima.features.detail.data.model.video.VideoItem
+import com.example.composeshinobicima.features.detail.data.model.mark.MarkRequest
 import com.example.composeshinobicima.features.detail.domain.constants.DetailTab
-import com.example.composeshinobicima.features.detail.domain.model.DetailMediaItem
 import com.example.composeshinobicima.features.detail.presentaion.components.creditlist.CreditsList
 import com.example.composeshinobicima.features.detail.presentaion.components.expandabletext.ExpandableText
-import com.example.composeshinobicima.features.detail.presentaion.components.header.MediaHeader
 import com.example.composeshinobicima.features.detail.presentaion.components.header.PeopleHeader
 import com.example.composeshinobicima.features.detail.presentaion.components.reviewslist.ReviewsList
 import com.example.composeshinobicima.features.detail.presentaion.components.seasonlist.SeasonsList
 import com.example.composeshinobicima.features.detail.presentaion.components.youtubeplayer.YouTubePlayer
-
 import com.example.composeshinobicima.features.detail.presentaion.viewmodel.DetailActions
 import com.example.composeshinobicima.features.detail.presentaion.viewmodel.DetailViewModel
 import com.example.composeshinobicima.ui.theme.poppinsFamily
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 @SuppressLint("DefaultLocale")
 @Composable
@@ -92,8 +75,12 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
 
 
     LaunchedEffect(Unit) {
+
+        viewModel.executeAction(DetailActions.GetSessionId)
+
         when (mediaType) {
             MediaType.Movies -> {
+                viewModel.executeAction(DetailActions.GetMovieAccountState(mediaId))
                 viewModel.executeAction(DetailActions.GetDetailMovie(mediaId))
                 viewModel.executeAction(DetailActions.GetMovieVideo(mediaId))
                 viewModel.executeAction(DetailActions.GetMovieCredits(mediaId))
@@ -103,6 +90,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
             }
 
             MediaType.Tv -> {
+                viewModel.executeAction(DetailActions.GetTvAccountState(mediaId))
                 viewModel.executeAction(DetailActions.GetDetailTv(mediaId))
                 viewModel.executeAction(DetailActions.GetTvVideo(mediaId))
                 viewModel.executeAction(DetailActions.GetTvCredits(mediaId))
@@ -173,15 +161,176 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
             ) {
                 if (mediaType == MediaType.People) {
                     mediaItem?.let {
-                        PeopleHeader(posterHeight, mediaItem)
+                        PeopleHeader(posterHeight, mediaItem,state.sessionId)
 
                     }
                 } else {
                     mediaItem?.let {
-                        MediaHeader(posterHeight, mediaItem, mediaType)
+                        // 🔽 This is the inlined MediaHeader content
+                        Row(modifier = Modifier.padding(horizontal = 18.dp)) {
+                            // Poster
+                            Card(
+                                modifier = Modifier
+                                    .width(140.dp)
+                                    .height(posterHeight),
+                                shape = RoundedCornerShape(10.dp),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                                border = BorderStroke(2.dp, Color.White)
+                            ) {
+                                AsyncImage(
+                                    model = "https://image.tmdb.org/t/p/original${mediaItem.resolvedPoster ?: ""}",
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                )
+                            }
 
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Column(modifier = Modifier.padding(top = (posterHeight * 0.35f))) {
+
+                                Text(
+                                    modifier = Modifier.padding(top = 8.dp),
+                                    text = mediaItem.resolvedTilte ?: "",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+
+                                Text(
+                                    text = (mediaItem.resolvedDate?.split("-")?.getOrNull(0) ?: "") +
+                                            " ‧ " + (mediaItem.genres?.getOrNull(0)?.name ?: "") +
+                                            " ‧ " + (
+                                            if (mediaType == MediaType.Movies)
+                                                "${mediaItem.runtime} min"
+                                            else if (mediaType == MediaType.Tv)
+                                                "${mediaItem.number_of_seasons} Seasons"
+                                            else ""
+                                            ),
+                                    color = Color.Gray
+                                )
+
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Image(
+                                        painter = painterResource(R.drawable.tmdb),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(45.dp, 16.dp)
+                                            .background(colorResource(R.color.dark_blue))
+                                            .padding(horizontal = 3.dp)
+                                    )
+
+                                    Text(
+                                        modifier = Modifier.padding(start = 8.dp),
+                                        text = buildAnnotatedString {
+                                            withStyle(style = SpanStyle(color = Color.Black)) {
+                                                append(String.format("%.1f", mediaItem.vote_average))
+                                            }
+                                            withStyle(style = SpanStyle(color = Color.Gray)) {
+                                                append("/10.0")
+                                            }
+                                        }
+                                    )
+                                }
+
+                                // Only show favorite/watchlist buttons if session exists
+                                if (state.sessionId != null) {
+                                    Row {
+                                        // Watchlist Button
+                                        Card(
+                                            shape = RoundedCornerShape(10.dp),
+                                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                            colors = CardDefaults.cardColors(containerColor = colorResource(R.color.light_gray)),
+                                            modifier = Modifier
+                                                .wrapContentSize()
+                                                .clickable {
+                                                    viewModel.executeAction(
+                                                        DetailActions.ToggleWatchList(
+                                                            MarkRequest(
+                                                                media_type = mediaType.value,
+                                                                media_id = mediaId,
+                                                                watchlist = !state.isWatchlist // toggle current state
+                                                            )
+                                                        )
+                                                    )
+                                                }
+                                        ) {
+                                            Box(
+                                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.Center
+                                                ) {
+                                                    Image(
+                                                        painter = painterResource(
+                                                            if (state.isWatchlist) R.drawable.ic_saved else R.drawable.ic_save
+                                                        ),
+                                                        contentDescription = "save button",
+                                                        modifier = Modifier.size(20.dp)
+                                                    )
+                                                    Text(
+                                                        text = if (state.isWatchlist) "Saved" else "Save",
+                                                        color = Color.Gray,
+                                                        modifier = Modifier.padding(start = 6.dp),
+                                                        fontSize = 15.sp
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        Spacer(modifier = Modifier.width(16.dp))
+
+                                        // Favorite Button
+                                        Card(
+                                            shape = RoundedCornerShape(10.dp),
+                                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                            colors = CardDefaults.cardColors(containerColor = colorResource(R.color.light_gray)),
+                                            modifier = Modifier
+                                                .wrapContentSize()
+                                                .clickable {
+                                                    viewModel.executeAction(
+                                                        DetailActions.ToggleFavorite(
+                                                            MarkRequest(
+                                                                media_type = mediaType.value,
+                                                                media_id = mediaId,
+                                                                favorite = !state.isFavorite // toggle current state
+                                                            )
+                                                        )
+                                                    )
+                                                }
+                                        ) {
+                                            Box(
+                                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.Center
+                                                ) {
+                                                    Image(
+                                                        painter = painterResource(
+                                                            if (state.isFavorite) R.drawable.ic_saved else R.drawable.ic_save
+                                                        ),
+                                                        contentDescription = "like button",
+                                                        modifier = Modifier.size(20.dp)
+                                                    )
+                                                    Text(
+                                                        text = if (state.isFavorite) "Liked" else "Like",
+                                                        color = Color.Gray,
+                                                        modifier = Modifier.padding(start = 6.dp),
+                                                        fontSize = 15.sp
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // 🔼 End of inlined MediaHeader
                     }
                 }
+
 
 
                 FlowRow(
