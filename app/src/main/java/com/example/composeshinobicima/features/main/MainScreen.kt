@@ -20,8 +20,7 @@ import com.example.composeshinobicima.features.detail.presentaion.screen.MediaDe
 import com.example.composeshinobicima.features.discover.presentaion.screen.DiscoverScreen
 import com.example.composeshinobicima.features.find.presenation.screen.FindScreen
 import com.example.composeshinobicima.features.home.presentaion.screen.HomeScreen
-
-
+import com.example.composeshinobicima.features.profile.ProfileScreen
 
 
 @Composable
@@ -80,7 +79,9 @@ fun MainScreen() {
                 DiscoverScreen(navController,args.genreId)
             }
 
-            composable<ScreenResources.ProfileScreenRoute> { }
+            composable<ScreenResources.ProfileScreenRoute> {
+                ProfileScreen()
+            }
         }
 
         LaunchedEffect(navController) {

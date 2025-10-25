@@ -220,44 +220,41 @@ class DetailViewModel @Inject constructor(
         flowCollector: FlowCollector<DetailResults>,
         toggle: suspend () -> DataState<MarkResponse>
     ) {
-        flowCollector.emit(DetailResults.Loading(true))
 
-        when (val result = toggle()) {
+        flowCollector.emit(DetailResults.ToggleFavoriteResult(CommonViewState(isLoading = true), 0))
+        when (val result = toggle() ) {
             is DataState.Success -> {
                 val code = result.data.status_code
                 when (code) {
-                    1 -> flowCollector.emit(DetailResults.ToggleFavoriteResult(true, code))  // added
-                    8 -> flowCollector.emit(DetailResults.ToggleFavoriteResult(false, code)) // removed
-                    else -> flowCollector.emit(DetailResults.ToggleFavoriteResult(false, code))
+                    1 -> flowCollector.emit(DetailResults.ToggleFavoriteResult(CommonViewState(data = true), code))  // added
+                    13 -> flowCollector.emit(DetailResults.ToggleFavoriteResult(CommonViewState(data = false), code)) // removed
+                    else -> flowCollector.emit(DetailResults.ToggleCodeResult( code ))
                 }
             }
-            is DataState.Error -> flowCollector.emit(DetailResults.ToggleFavoriteResult(false, -1))
+            is DataState.Error -> flowCollector.emit(DetailResults.ToggleCodeResult( -1 ))
             else -> {}
         }
-
-        flowCollector.emit(DetailResults.Loading(false))
     }
 
     private suspend fun handleToggleWatchlist(
         flowCollector: FlowCollector<DetailResults>,
         toggle: suspend () -> DataState<MarkResponse>
     ) {
-        flowCollector.emit(DetailResults.Loading(true))
-
+        flowCollector.emit(DetailResults.ToggleWatchlistResult(CommonViewState(isLoading = true), 0))
         when (val result = toggle()) {
             is DataState.Success -> {
                 val code = result.data.status_code
                 when (code) {
-                    1 -> flowCollector.emit(DetailResults.ToggleWatchlistResult(true, code))
-                    8 -> flowCollector.emit(DetailResults.ToggleWatchlistResult(false, code))
-                    else -> flowCollector.emit(DetailResults.ToggleWatchlistResult(false, code))
+                    1 ->{
+                        flowCollector.emit(DetailResults.ToggleWatchlistResult(CommonViewState(data = true), code))
+                    }
+                    13 -> flowCollector.emit(DetailResults.ToggleWatchlistResult(CommonViewState(data = false), code))
+                    else -> flowCollector.emit(DetailResults.ToggleCodeResult( code ))
                 }
             }
-            is DataState.Error -> flowCollector.emit(DetailResults.ToggleWatchlistResult(false, -1))
+            is DataState.Error -> flowCollector.emit(DetailResults.ToggleCodeResult( -1 ))
             else -> {}
         }
-
-        flowCollector.emit(DetailResults.Loading(false))
     }
 
 

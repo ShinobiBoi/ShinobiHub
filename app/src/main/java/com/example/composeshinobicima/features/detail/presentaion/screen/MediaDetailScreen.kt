@@ -1,6 +1,8 @@
 package com.example.composeshinobicima.features.detail.presentaion.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -71,6 +74,20 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
 
     val viewModel = hiltViewModel<DetailViewModel>()
     val scrollState = rememberScrollState()
+
+    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+
+    // Define proportions relative to screen size
+    val backdropHeightFraction = 0.275f
+    val backdropHeight = screenHeight * backdropHeightFraction
+    val posterHeight = 200.dp
+
+
+    val state by viewModel.viewStates.collectAsState()
+    val mediaItem = state.detailMediaItem.data
+
 
 
 
@@ -112,17 +129,12 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
 
     }
 
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
-
-    // Define proportions relative to screen size
-    val backdropHeightFraction = 0.275f
-    val backdropHeight = screenHeight * backdropHeightFraction
-    val posterHeight = 200.dp
-
-
-    val state by viewModel.viewStates.collectAsState()
-    val mediaItem = state.detailMediaItem.data
+    LaunchedEffect(state.toggleCode) {
+        when (state.toggleCode) {
+            1 -> Toast.makeText(context, "Item added successfully", Toast.LENGTH_SHORT).show()
+            13 -> Toast.makeText(context, "Item removed successfully", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
     if (state.isLoading) {
@@ -156,12 +168,12 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                 modifier = Modifier
                     .fillMaxSize()
                     // Offset makes poster overlap halfway over the backdrop
-                    .padding(top = if(mediaType != MediaType.People)(backdropHeight - (posterHeight * 0.35f)) else 0.dp)
+                    .padding(top = if (mediaType != MediaType.People) (backdropHeight - (posterHeight * 0.35f)) else 0.dp)
 
             ) {
                 if (mediaType == MediaType.People) {
                     mediaItem?.let {
-                        PeopleHeader(posterHeight, mediaItem,state.sessionId)
+                        PeopleHeader(posterHeight, mediaItem, state.sessionId)
 
                     }
                 } else {
@@ -196,7 +208,8 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                 )
 
                                 Text(
-                                    text = (mediaItem.resolvedDate?.split("-")?.getOrNull(0) ?: "") +
+                                    text = (mediaItem.resolvedDate?.split("-")?.getOrNull(0)
+                                        ?: "") +
                                             " ‧ " + (mediaItem.genres?.getOrNull(0)?.name ?: "") +
                                             " ‧ " + (
                                             if (mediaType == MediaType.Movies)
@@ -222,7 +235,12 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                         modifier = Modifier.padding(start = 8.dp),
                                         text = buildAnnotatedString {
                                             withStyle(style = SpanStyle(color = Color.Black)) {
-                                                append(String.format("%.1f", mediaItem.vote_average))
+                                                append(
+                                                    String.format(
+                                                        "%.1f",
+                                                        mediaItem.vote_average
+                                                    )
+                                                )
                                             }
                                             withStyle(style = SpanStyle(color = Color.Gray)) {
                                                 append("/10.0")
@@ -231,95 +249,121 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                     )
                                 }
 
-                                // Only show favorite/watchlist buttons if session exists
                                 if (state.sessionId != null) {
-                                    Row {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 8.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                    ) {
                                         // Watchlist Button
                                         Card(
                                             shape = RoundedCornerShape(10.dp),
                                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                                            colors = CardDefaults.cardColors(containerColor = colorResource(R.color.light_gray)),
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = colorResource(
+                                                    R.color.light_gray
+                                                )
+                                            ),
                                             modifier = Modifier
-                                                .wrapContentSize()
-                                                .clickable {
-                                                    viewModel.executeAction(
-                                                        DetailActions.ToggleWatchList(
-                                                            MarkRequest(
-                                                                media_type = mediaType.value,
-                                                                media_id = mediaId,
-                                                                watchlist = !state.isWatchlist // toggle current state
-                                                            )
-                                                        )
-                                                    )
-                                                }
+                                                .weight(1f) // evenly share space
+                                                .height(48.dp)
+
                                         ) {
+
                                             Box(
-                                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                                modifier = Modifier.fillMaxSize(),
                                                 contentAlignment = Alignment.Center
                                             ) {
-                                                Row(
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.Center
-                                                ) {
-                                                    Image(
-                                                        painter = painterResource(
-                                                            if (state.isWatchlist) R.drawable.ic_saved else R.drawable.ic_save
-                                                        ),
-                                                        contentDescription = "save button",
-                                                        modifier = Modifier.size(20.dp)
-                                                    )
-                                                    Text(
-                                                        text = if (state.isWatchlist) "Saved" else "Save",
-                                                        color = Color.Gray,
-                                                        modifier = Modifier.padding(start = 6.dp),
-                                                        fontSize = 15.sp
-                                                    )
+
+
+                                                if (state.isWatchlist.isLoading) {
+                                                    CircularProgressIndicator()
+
+                                                } else {
+                                                    Row(
+                                                        modifier = Modifier.clickable {
+                                                            viewModel.executeAction(
+                                                                DetailActions.ToggleWatchList(
+                                                                    MarkRequest(
+                                                                        media_type = mediaType.value,
+                                                                        media_id = mediaId,
+                                                                        watchlist = state.isWatchlist.data?.not()
+                                                                    )
+                                                                )
+                                                            )
+                                                        },
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.Center
+                                                    ) {
+                                                        Image(
+                                                            painter = painterResource(
+                                                                if (state.isWatchlist.data == true) R.drawable.ic_saved else R.drawable.ic_save
+                                                            ),
+                                                            contentDescription = "save button",
+                                                            modifier = Modifier.size(20.dp)
+                                                        )
+                                                        Text(
+                                                            text = if (state.isWatchlist.data==true) "Saved" else "Save",
+                                                            color = Color.Gray,
+                                                            modifier = Modifier.padding(start = 6.dp),
+                                                            fontSize = 15.sp
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
-
-                                        Spacer(modifier = Modifier.width(16.dp))
 
                                         // Favorite Button
                                         Card(
                                             shape = RoundedCornerShape(10.dp),
                                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                                            colors = CardDefaults.cardColors(containerColor = colorResource(R.color.light_gray)),
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = colorResource(
+                                                    R.color.light_gray
+                                                )
+                                            ),
                                             modifier = Modifier
-                                                .wrapContentSize()
-                                                .clickable {
-                                                    viewModel.executeAction(
-                                                        DetailActions.ToggleFavorite(
-                                                            MarkRequest(
-                                                                media_type = mediaType.value,
-                                                                media_id = mediaId,
-                                                                favorite = !state.isFavorite // toggle current state
-                                                            )
-                                                        )
-                                                    )
-                                                }
+                                                .weight(1f) // evenly share space
+                                                .height(48.dp)
                                         ) {
-                                            Box(
-                                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Row(
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.Center
+                                            if (state.isFavorite.isLoading) {
+                                                CircularProgressIndicator()
+
+                                            } else {
+                                                Box(
+                                                    modifier = Modifier.fillMaxSize(),
+                                                    contentAlignment = Alignment.Center
                                                 ) {
-                                                    Image(
-                                                        painter = painterResource(
-                                                            if (state.isFavorite) R.drawable.ic_saved else R.drawable.ic_save
-                                                        ),
-                                                        contentDescription = "like button",
-                                                        modifier = Modifier.size(20.dp)
-                                                    )
-                                                    Text(
-                                                        text = if (state.isFavorite) "Liked" else "Like",
-                                                        color = Color.Gray,
-                                                        modifier = Modifier.padding(start = 6.dp),
-                                                        fontSize = 15.sp
-                                                    )
+                                                    Row(
+                                                        modifier = Modifier.clickable {
+                                                            viewModel.executeAction(
+                                                                DetailActions.ToggleFavorite(
+                                                                    MarkRequest(
+                                                                        media_type = mediaType.value,
+                                                                        media_id = mediaId,
+                                                                        favorite = state.isFavorite.data?.not()
+                                                                    )
+                                                                )
+                                                            )
+                                                        },
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.Center
+                                                    ) {
+                                                        Image(
+                                                            painter = painterResource(
+                                                                if (state.isFavorite.data == true) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
+                                                            ),
+                                                            contentDescription = "like button",
+                                                            modifier = Modifier.size(20.dp)
+                                                        )
+                                                        Text(
+                                                            text = if (state.isFavorite.data== true) "Liked" else "Like",
+                                                            color = Color.Gray,
+                                                            modifier = Modifier.padding(start = 6.dp),
+                                                            fontSize = 15.sp
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
@@ -429,7 +473,11 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                 }
 
                                 Text(
-                                    modifier = Modifier.padding(top = 32.dp, start = 18.dp,end=18.dp),
+                                    modifier = Modifier.padding(
+                                        top = 32.dp,
+                                        start = 18.dp,
+                                        end = 18.dp
+                                    ),
                                     text = "About",
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold
@@ -440,7 +488,11 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                 ExpandableText(
                                     text = about ?: "",
                                     fontFamily = poppinsFamily,
-                                    modifier = Modifier.padding(top = 16.dp, start = 18.dp, end = 18.dp)
+                                    modifier = Modifier.padding(
+                                        top = 16.dp,
+                                        start = 18.dp,
+                                        end = 18.dp
+                                    )
                                 )
 
 
@@ -451,7 +503,11 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
 
                                 state.similar.data?.let {
                                     Text(
-                                        modifier = Modifier.padding(top = 32.dp, start = 18.dp, end = 18.dp),
+                                        modifier = Modifier.padding(
+                                            top = 32.dp,
+                                            start = 18.dp,
+                                            end = 18.dp
+                                        ),
                                         text = "Similar",
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold
@@ -470,7 +526,11 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                 state.peopleCredits.data?.let {
 
                                     Text(
-                                        modifier = Modifier.padding(top = 32.dp, start = 18.dp, end = 18.dp),
+                                        modifier = Modifier.padding(
+                                            top = 32.dp,
+                                            start = 18.dp,
+                                            end = 18.dp
+                                        ),
                                         text = "Known for",
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold
@@ -492,13 +552,13 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                             }
 
                             DetailTab.REVIEWS -> {
-                                    Text(
-                                        modifier = Modifier.padding(top = 32.dp, start = 18.dp),
-                                        text = "Reviews",
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    ReviewsList(state.review.data)
+                                Text(
+                                    modifier = Modifier.padding(top = 32.dp, start = 18.dp),
+                                    text = "Reviews",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ReviewsList(state.review.data)
 
                                 Spacer(modifier = Modifier.height(16.dp))
 

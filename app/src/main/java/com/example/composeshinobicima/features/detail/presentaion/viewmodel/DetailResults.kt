@@ -1,5 +1,6 @@
 package com.example.composeshinobicima.features.detail.presentaion.viewmodel
 
+import android.util.Log
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.MediaViewState
 import com.example.composeshinobicima.appcore.mvi.Result
@@ -69,14 +70,14 @@ sealed class DetailResults : Result<DetailViewState> {
     data class AccountStateLoaded(val favorite: Boolean, val watchlist: Boolean) : DetailResults() {
         override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
             return oldState.copy(
-                isFavorite = favorite,
-                isWatchlist = watchlist
+                isFavorite = CommonViewState(data = favorite),
+                isWatchlist = CommonViewState(data = watchlist)
             )
         }
     }
 
     // Toggle now updates only the relevant flag and stores the code
-    data class ToggleFavoriteResult(val isFavorite: Boolean, val code: Int) : DetailResults() {
+    data class ToggleFavoriteResult(val isFavorite: CommonViewState<Boolean>, val code: Int) : DetailResults() {
         override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
             return oldState.copy(
                 isFavorite = isFavorite,
@@ -85,10 +86,18 @@ sealed class DetailResults : Result<DetailViewState> {
         }
     }
 
-    data class ToggleWatchlistResult(val isWatchlist: Boolean, val code: Int) : DetailResults() {
+    data class ToggleWatchlistResult(val isWatchlist: CommonViewState<Boolean>, val code: Int) : DetailResults() {
         override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
             return oldState.copy(
                 isWatchlist = isWatchlist,
+                toggleCode = code
+            )
+        }
+    }
+
+    data class ToggleCodeResult( val code: Int) : DetailResults() {
+        override fun reduce(defaultState: DetailViewState, oldState: DetailViewState): DetailViewState {
+            return oldState.copy(
                 toggleCode = code
             )
         }
