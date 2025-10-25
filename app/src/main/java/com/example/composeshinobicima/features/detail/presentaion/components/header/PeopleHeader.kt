@@ -63,20 +63,20 @@ fun PeopleHeader(posterHeight: Dp, mediaItem: DetailMediaItem?, sessionId: Strin
                 modifier = Modifier.padding(top = 8.dp),
                 text = mediaItem?.resolvedTilte ?: "",
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = colorResource(R.color.black)
             )
 
             Text(
                 modifier = Modifier,
                 //.padding(top = 8.dp),
                 text = "Born at: ${mediaItem?.birthday}",
-                color = Color.Gray
+                color = colorResource(R.color.gray)
             )
 
             Text(
 
                 text = "Known for: ${mediaItem?.known_for_department}",
-                color = Color.Gray
+                color = colorResource(R.color.gray)
             )
 
             if (sessionId != null) {
@@ -103,7 +103,7 @@ fun PeopleHeader(posterHeight: Dp, mediaItem: DetailMediaItem?, sessionId: Strin
                             )
                             Text(
                                 text = "Save",
-                                color = Color.Gray,
+                                color = colorResource(R.color.gray),
                                 modifier = Modifier.padding(start = 6.dp),
                                 fontSize = 15.sp
                             )

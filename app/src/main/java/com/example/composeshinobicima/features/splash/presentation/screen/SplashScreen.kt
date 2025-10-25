@@ -1,6 +1,5 @@
 package com.example.composeshinobicima.features.splash.presentation.screen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,14 +40,20 @@ fun SplashScreen(rootController: NavController, childController: NavController) 
     val state by splashViewModel.viewStates.collectAsState()
 
 
-    LaunchedEffect (state.sessionId){
+    LaunchedEffect(state.sessionId) {
         splashViewModel.executeAction(SplashAction.GetSessionId)
         delay(3000)
 
-        if(!state.sessionId.isNullOrEmpty()){
-            rootController.navigate(ScreenResources.MainScreeRoute)
-        }else{
-            childController.navigate(ScreenResources.LoginScreeRoute)
+        if (state.sessionId.isNullOrEmpty()) {
+            childController.navigate(ScreenResources.LoginScreeRoute) {
+                popUpTo(ScreenResources.SplashScreenRoute) { inclusive = true }
+                launchSingleTop = true
+            }
+        } else {
+            rootController.navigate(ScreenResources.MainScreeRoute) {
+                popUpTo(ScreenResources.AuthScreenRoute) { inclusive = true }
+                launchSingleTop = true
+            }
         }
     }
 
@@ -70,7 +75,6 @@ fun SplashScreen(rootController: NavController, childController: NavController) 
 
         ) {
             Text(
-
                 text = "ShinobiHub",
                 fontFamily = germaniaOneFamily,
                 color = Color.White,

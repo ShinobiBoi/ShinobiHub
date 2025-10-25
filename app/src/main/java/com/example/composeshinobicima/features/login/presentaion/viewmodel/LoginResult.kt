@@ -2,10 +2,12 @@ package com.example.composeshinobicima.features.login.presentaion.viewmodel
 
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.Result
+import com.example.composeshinobicima.features.login.data.model.login.LoginResponse
+import com.example.composeshinobicima.features.login.data.model.token.TokenResponse
 
 sealed class LoginResult :Result<LoginViewState>{
 
-    data class RequestToken(val state: CommonViewState<String>):LoginResult(){
+    data class RequestToken(val state: CommonViewState<TokenResponse>):LoginResult(){
         override fun reduce(
             defaultState: LoginViewState,
             oldState: LoginViewState
@@ -16,13 +18,13 @@ sealed class LoginResult :Result<LoginViewState>{
         }
     }
 
-    data class Login(val state: CommonViewState<Boolean>):LoginResult(){
+    data class Login(val state: CommonViewState<LoginResponse>):LoginResult(){
         override fun reduce(
             defaultState: LoginViewState,
             oldState: LoginViewState
         ): LoginViewState {
             return oldState.copy(
-                isLoginSuccess = state
+                loginResponse = state
             )
         }
     }

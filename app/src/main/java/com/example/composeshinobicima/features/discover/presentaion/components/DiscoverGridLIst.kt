@@ -12,14 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composeshinobicima.appcore.components.SmallPosterItem
+import com.example.composeshinobicima.R
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.mvi.MediaViewState
-import com.example.composeshinobicima.features.find.presenation.components.GridPosterList
 
 
 @Composable
@@ -45,7 +44,7 @@ fun DiscoverGridLIst(
             state.data.isNullOrEmpty() -> {
                 Text(
                     text = "It's empty here!",
-                    color = Color.Gray,
+                    color = colorResource(R.color.gray),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )

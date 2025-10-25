@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,7 +37,7 @@ fun ReviewCard(review: Review) {
             .wrapContentHeight(),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.off_white)),
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, Color.LightGray),
+        border = BorderStroke(1.dp, colorResource(R.color.light_gray)),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -56,7 +55,7 @@ fun ReviewCard(review: Review) {
                     val initials = review.author?.take(1)?.uppercase() ?: "?"
                     Text(
                         text = initials,
-                        color = Color.White,
+                        color = colorResource(R.color.white),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -67,12 +66,12 @@ fun ReviewCard(review: Review) {
                         text = review.author ?: "Unknown",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        color = Color.Black
+                        color = colorResource(R.color.black)
                     )
                     Text(
                         text = review.created_at?.substringBefore("T") ?: "",
                         fontSize = 12.sp,
-                        color = Color.Gray
+                        color = colorResource(R.color.gray)
                     )
                 }
             }

@@ -1,11 +1,13 @@
 package com.example.composeshinobicima.features.login.presentaion.viewmodel
 
-import android.adservices.ondevicepersonalization.RequestToken
+import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
 import com.example.composeshinobicima.appcore.mvi.ViewState
+import com.example.composeshinobicima.features.login.data.model.login.LoginResponse
+import com.example.composeshinobicima.features.login.data.model.token.TokenResponse
 
 data class LoginViewState(
-    val requestToken: CommonViewState<String> = CommonViewState(),
+    val requestToken: CommonViewState<TokenResponse> = CommonViewState(),
     val sessionId: CommonViewState<String> = CommonViewState(),
-    val isLoginSuccess: CommonViewState<Boolean> = CommonViewState()
+    val loginResponse: CommonViewState<LoginResponse> = CommonViewState()
 ):ViewState

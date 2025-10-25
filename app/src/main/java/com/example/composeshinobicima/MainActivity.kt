@@ -17,7 +17,6 @@ import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.auth.AuthScreen
 import com.example.composeshinobicima.features.home.presentaion.screen.HomeScreen
 import com.example.composeshinobicima.features.main.MainScreen
-import com.example.composeshinobicima.features.splash.presentation.screen.SplashScreen
 import com.example.composeshinobicima.ui.theme.ComposeShinobiCimaTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -33,6 +32,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
+
             ComposeShinobiCimaTheme {
                 val rootController = rememberNavController()
 
@@ -47,14 +48,13 @@ class MainActivity : ComponentActivity() {
 
                         }
                         composable<ScreenResources.MainScreeRoute> {
-                            MainScreen()
+                            MainScreen(rootController)
 
                         }
                     }
 
 
                 }
-
         }
     }
 }

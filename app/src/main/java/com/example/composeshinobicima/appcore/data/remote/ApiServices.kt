@@ -362,27 +362,4 @@ interface ApiServices {
 
 }
 
-/*
-data class LoginRequest(
-    val username:String,
-    val password :String,
-    val request_token :String
-)
-
-data class LoginResponse(
-    val success:Boolean,
-    val expires_at :String,
-    val request_token:String,
-)
-
-data class SessionRequest(
-    val request_token:String,
-)
-
-data class SessionResponse(
-    val success:Boolean,
-    val session_id:String,
-)
-*/
-
 

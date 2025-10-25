@@ -66,13 +66,13 @@ fun SeasonItem(season: com.example.composeshinobicima.features.detail.data.model
                     text = season.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = Color.Black
+                    color = colorResource(R.color.black)
                 )
 
                 Text(
                     text = "Episodes: ${season.episode_count}",
                     fontSize = 14.sp,
-                    color = Color.Gray,
+                    color = colorResource(R.color.gray),
                     modifier = Modifier.padding(top = 4.dp)
                 )
 

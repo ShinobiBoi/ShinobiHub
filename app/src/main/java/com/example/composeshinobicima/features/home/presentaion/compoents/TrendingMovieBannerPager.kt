@@ -2,6 +2,7 @@ package com.example.composeshinobicima.features.home.presentaion.compoents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,7 +38,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun TrendingMovieBannerPager(
     mediaItems: List<MediaItem>,
-    pagerState: PagerState
+    pagerState: PagerState,
+    onItemClick: (Int,MediaType) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
@@ -67,6 +68,9 @@ fun TrendingMovieBannerPager(
                 .height(screenHeight * 0.3f)
                 .padding(horizontal = 13.dp, vertical = 24.dp)
                 .clip(RoundedCornerShape(12.dp))
+                .clickable(
+                    onClick = {onItemClick(mediaItem.id,mediaItem.media_type)}
+                )
         ) {
             // Movie image
             AsyncImage(
@@ -99,7 +103,7 @@ fun TrendingMovieBannerPager(
                         .background(colorResource(R.color.light_blue))
                         .padding(4.dp),
                     text = "Trending Now",
-                    color = Color.White,
+                    color = colorResource(R.color.white),
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
@@ -125,7 +129,7 @@ fun TrendingMovieBannerPager(
                                 .padding(4.dp)
                                 .size(if (isSelected) 10.dp else 8.dp)
                                 .clip(RoundedCornerShape(50))
-                                .background(if (isSelected) Color.White else Color.Gray)
+                                .background(if (isSelected) colorResource(R.color.white) else colorResource(R.color.gray))
                         )
                     }
                 }

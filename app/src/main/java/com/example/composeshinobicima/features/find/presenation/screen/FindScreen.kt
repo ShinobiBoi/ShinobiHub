@@ -1,11 +1,9 @@
 package com.example.composeshinobicima.features.find.presenation.screen
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -100,7 +97,7 @@ fun FindScreen(navController: NavController) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_filter),
                         contentDescription = "Filter",
-                        tint = Color.Gray
+                        tint = colorResource(R.color.gray)
                     )
                 }
             }
@@ -112,7 +109,7 @@ fun FindScreen(navController: NavController) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
-                containerColor = Color.White,
+                containerColor = colorResource(R.color.white),
                 dragHandle = {}
             ) {
                 FilterSheetContent(
@@ -354,7 +351,7 @@ fun FilterSheetContent(
                         onClick = { onMediaTypeChange(type) },
                         colors = androidx.compose.material3.RadioButtonDefaults.colors(
                             selectedColor = SelectedColor,
-                            unselectedColor = Color.Gray
+                            unselectedColor = colorResource(R.color.gray)
                         )
                     )
                     Text(
@@ -364,7 +361,7 @@ fun FilterSheetContent(
                             MediaType.Tv -> "TV Series"
                             MediaType.People -> "People"
                         },
-                        color = if (selected) Color.Black else Color.DarkGray,
+                        color = if (selected) colorResource(R.color.black) else colorResource(R.color.gray),
                         fontSize = 16.sp
                     )
                 }

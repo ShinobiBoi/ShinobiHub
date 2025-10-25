@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,13 +19,15 @@ import com.example.composeshinobicima.CustomBottomNavigationBar
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.detail.presentaion.screen.MediaDetailScreen
 import com.example.composeshinobicima.features.discover.presentaion.screen.DiscoverScreen
+import com.example.composeshinobicima.features.favourite.presentaion.screen.FavouriteScreen
 import com.example.composeshinobicima.features.find.presenation.screen.FindScreen
 import com.example.composeshinobicima.features.home.presentaion.screen.HomeScreen
-import com.example.composeshinobicima.features.profile.ProfileScreen
+import com.example.composeshinobicima.features.profile.presenation.screen.ProfileScreen
+import com.example.composeshinobicima.features.watchlist.presentaion.screen.WatchListScreen
 
 
 @Composable
-fun MainScreen() {
+fun MainScreen(rootController: NavController) {
 
 
 
@@ -80,8 +83,15 @@ fun MainScreen() {
             }
 
             composable<ScreenResources.ProfileScreenRoute> {
-                ProfileScreen()
+                ProfileScreen(rootController,navController)
             }
+            composable<ScreenResources.WatchListScreenRoute> {
+                WatchListScreen(navController)
+            }
+            composable<ScreenResources.FavouritesScreenRoute> {
+                FavouriteScreen(navController)
+            }
+
         }
 
         LaunchedEffect(navController) {

@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,8 +46,6 @@ fun HomeScreen(controller: NavController) {
 
     val scrollState = rememberScrollState()
     val pagerState = rememberPagerState(pageCount = {8})
-
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -82,12 +78,12 @@ fun HomeScreen(controller: NavController) {
                     Text(
                         text = "Hi,  ${state.account.data?.username?:"Guest"} \uD83D\uDC4B\uD83C\uDFFC",
                         fontSize = 30.sp,
-                        color = Color.Black
+                        color = colorResource(R.color.black)
                     )
                     Text(
                         text = "Experience the Eternity",
                         fontSize = 18.sp,
-                        color = Color.Gray
+                        color = colorResource(R.color.gray)
                     )
 
                 }
@@ -100,7 +96,7 @@ fun HomeScreen(controller: NavController) {
                         .clip(CircleShape)
                         .size(54.dp),
                     model = "https://image.tmdb.org/t/p/original${profilePic}",
-                    contentDescription = state.popularMovies.data?.get(0)?.resolvedTitle,
+                    contentDescription = "profile pic",
                     contentScale = ContentScale.Crop,
                 )
                 else(
@@ -114,7 +110,7 @@ fun HomeScreen(controller: NavController) {
                             val initials = state.account.data?.username?.take(1)?.uppercase() ?: "?"
                             Text(
                                 text = initials,
-                                color = Color.White,
+                                color = colorResource(R.color.white),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
                             )
@@ -131,13 +127,15 @@ fun HomeScreen(controller: NavController) {
 
 
             state.trendingAll.data?.let {
-                TrendingMovieBannerPager(it.subList(0, 8),pagerState)
+                TrendingMovieBannerPager(it.subList(0, 8),pagerState){id,mediaTpe->
+                    controller.navigate(ScreenResources.DetailScreenRoute(id,mediaTpe))
+                }
             }
 
 
             Text(
                 text = "Find now",
-                color = Color.Black,
+                color = colorResource(R.color.black),
                 fontSize = 20.sp,
                 modifier = Modifier.padding(start = 13.dp, top = 10.dp)
             )

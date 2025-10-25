@@ -90,20 +90,20 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun handleHetAccount(flowCollector: FlowCollector<HomeResult>, sessionId: String?) {
-
-        if (sessionId!=null)
-        when (val result = getAccountUseCase(sessionId)) {
-            is DataState.Success -> {
-                flowCollector.emit(HomeResult.AccountedLoaded(CommonViewState(data = result.data, isSuccess = true)))
-                sessionManager.saveAccountId(result.data.id!!)
+        if (sessionId!=null){
+            when (val result = getAccountUseCase(sessionId)) {
+                is DataState.Success -> {
+                    flowCollector.emit(HomeResult.AccountedLoaded(CommonViewState(data = result.data, isSuccess = true)))
+                    sessionManager.saveAccountId(result.data.id!!)
+                }
+                is DataState.Error -> flowCollector.emit(
+                    HomeResult.AccountedLoaded(CommonViewState(errorThrowable = result.throwable))
+                )
+                is DataState.Empty -> flowCollector.emit(
+                    HomeResult.AccountedLoaded(CommonViewState(isEmpty = true))
+                )
+                else -> {}
             }
-            is DataState.Error -> flowCollector.emit(
-                HomeResult.AccountedLoaded(CommonViewState(errorThrowable = result.throwable))
-            )
-            is DataState.Empty -> flowCollector.emit(
-                HomeResult.AccountedLoaded(CommonViewState(isEmpty = true))
-            )
-            else -> {}
         }
     }
 

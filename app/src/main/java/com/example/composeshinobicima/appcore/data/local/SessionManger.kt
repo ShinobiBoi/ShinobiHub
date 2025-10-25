@@ -57,4 +57,7 @@ class SessionManager(private val context: Context) {
             prefs.remove(ACCOUNT_ID_KEY)
         }
     }
+
+
+
 }

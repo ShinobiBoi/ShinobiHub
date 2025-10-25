@@ -22,8 +22,6 @@ sealed class ScreenResources {
     object MainScreeRoute : ScreenResources()
 
 
-
-
     @Serializable
     object FindScreenRoute : ScreenResources()
 
@@ -32,6 +30,13 @@ sealed class ScreenResources {
 
     @Serializable
     object ProfileScreenRoute : ScreenResources()
+
+    @Serializable
+    object WatchListScreenRoute : ScreenResources()
+
+    @Serializable
+    object FavouritesScreenRoute : ScreenResources()
+
 
     @Serializable
     data class DiscoverScreenRoute(val genreId: Int) : ScreenResources()

@@ -8,11 +8,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composeshinobicima.R
 import com.example.composeshinobicima.appcore.components.PosterList
 import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.mvi.MediaViewState
@@ -29,7 +30,7 @@ fun HomeMoviesList(state: MediaViewState, title: String,
 
         Text(
             text = title,
-            color = Color.Black,
+            color = colorResource(R.color.black),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -47,7 +48,7 @@ fun HomeMoviesList(state: MediaViewState, title: String,
             state.data.isNullOrEmpty() -> {
                 Text(
                     text = "It's empty here!",
-                    color = Color.Gray,
+                    color = colorResource(R.color.gray),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )

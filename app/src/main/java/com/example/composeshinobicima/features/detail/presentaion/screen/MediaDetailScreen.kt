@@ -1,7 +1,6 @@
 package com.example.composeshinobicima.features.detail.presentaion.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -187,7 +185,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                     .height(posterHeight),
                                 shape = RoundedCornerShape(10.dp),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                                border = BorderStroke(2.dp, Color.White)
+                                border = BorderStroke(2.dp, colorResource(R.color.white))
                             ) {
                                 AsyncImage(
                                     model = "https://image.tmdb.org/t/p/original${mediaItem.resolvedPoster ?: ""}",
@@ -204,7 +202,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                     modifier = Modifier.padding(top = 8.dp),
                                     text = mediaItem.resolvedTilte ?: "",
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = colorResource(R.color.black)
                                 )
 
                                 Text(
@@ -218,7 +216,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                                 "${mediaItem.number_of_seasons} Seasons"
                                             else ""
                                             ),
-                                    color = Color.Gray
+                                    color = colorResource(R.color.gray)
                                 )
 
                                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -227,14 +225,14 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                         contentDescription = null,
                                         modifier = Modifier
                                             .size(45.dp, 16.dp)
-                                            .background(colorResource(R.color.dark_blue))
+                                            .background(Color(0xFF0d253f))
                                             .padding(horizontal = 3.dp)
                                     )
 
                                     Text(
                                         modifier = Modifier.padding(start = 8.dp),
                                         text = buildAnnotatedString {
-                                            withStyle(style = SpanStyle(color = Color.Black)) {
+                                            withStyle(style = SpanStyle(color = colorResource(R.color.black))) {
                                                 append(
                                                     String.format(
                                                         "%.1f",
@@ -242,7 +240,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                                     )
                                                 )
                                             }
-                                            withStyle(style = SpanStyle(color = Color.Gray)) {
+                                            withStyle(style = SpanStyle(color = colorResource(R.color.gray))) {
                                                 append("/10.0")
                                             }
                                         }
@@ -305,7 +303,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                                         )
                                                         Text(
                                                             text = if (state.isWatchlist.data==true) "Saved" else "Save",
-                                                            color = Color.Gray,
+                                                            color = colorResource(R.color.gray),
                                                             modifier = Modifier.padding(start = 6.dp),
                                                             fontSize = 15.sp
                                                         )
@@ -359,7 +357,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                                         )
                                                         Text(
                                                             text = if (state.isFavorite.data== true) "Liked" else "Like",
-                                                            color = Color.Gray,
+                                                            color = colorResource(R.color.gray),
                                                             modifier = Modifier.padding(start = 6.dp),
                                                             fontSize = 15.sp
                                                         )
@@ -392,7 +390,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                         ) {
                             Text(
                                 text = item.name ?: "",
-                                color = Color.Black,
+                                color = colorResource(R.color.black),
                                 modifier = Modifier.padding(
                                     horizontal = 20.dp,
                                     vertical = 8.dp
@@ -411,7 +409,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                     shape = RoundedCornerShape(10.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                     colors = CardDefaults.cardColors(containerColor = colorResource(R.color.off_white)),
-                    border = BorderStroke(2.dp, Color.Gray)
+                    border = BorderStroke(2.dp, colorResource(R.color.gray))
 
 
                 ) {
@@ -429,7 +427,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                 .fillMaxWidth(0.8f) // doesn’t take full width, but centered
                                 .align(Alignment.CenterHorizontally)
                                 .clip(RoundedCornerShape(20.dp))
-                                .background(Color.LightGray)
+                                .background(colorResource(R.color.light_gray))
                                 .padding(3.dp),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
@@ -586,7 +584,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
                                     ) {
                                         Text(
                                             text = "No seasons available.",
-                                            color = Color.Gray,
+                                            color = colorResource(R.color.gray),
                                             fontSize = 14.sp,
                                             fontFamily = poppinsFamily
                                         )
@@ -616,8 +614,8 @@ fun TabItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (isSelected) Color.White else Color.LightGray
-    val textColor = if (isSelected) Color.Black else Color.Gray
+    val backgroundColor = if (isSelected) colorResource(R.color.white) else colorResource(R.color.light_gray)
+    val textColor = if (isSelected) colorResource(R.color.black) else colorResource(R.color.gray)
 
     Box(
         modifier = modifier

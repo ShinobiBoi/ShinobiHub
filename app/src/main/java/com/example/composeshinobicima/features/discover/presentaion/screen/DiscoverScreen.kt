@@ -1,6 +1,5 @@
 package com.example.composeshinobicima.features.discover.presentaion.screen
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +29,6 @@ import com.example.composeshinobicima.features.discover.presentaion.components.D
 import com.example.composeshinobicima.features.discover.presentaion.components.GenreList
 import com.example.composeshinobicima.features.discover.presentaion.viewmodel.DiscoverAction
 import com.example.composeshinobicima.features.discover.presentaion.viewmodel.DiscoverViewModel
-import com.example.composeshinobicima.features.find.presenation.components.FindMediaGridList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +58,7 @@ fun DiscoverScreen(navController: NavController,genreId:Int) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
-                containerColor = Color.White,
+                containerColor = colorResource(R.color.white),
                 dragHandle = {}
             ) {
                 DiscoverFilterSheet(
@@ -149,7 +147,7 @@ fun DiscoverScreen(navController: NavController,genreId:Int) {
             Text(
                 text = "View All",
                 fontSize = 16.sp,
-                color = Color.Gray,
+                color = colorResource(R.color.gray),
                 modifier = Modifier
                     .padding(top = 47.dp, end = 17.dp)
                     .clickable { showBottomSheet = true }
@@ -286,12 +284,12 @@ fun DiscoverFilterSheet(
                         onClick = { onMediaTypeChange(type) },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = SelectedColor,
-                            unselectedColor = Color.Gray
+                            unselectedColor = colorResource(R.color.gray)
                         )
                     )
                     Text(
                         text = if (type == MediaType.Movies) "Movies" else "TV Series",
-                        color = if (selected) Color.Black else Color.DarkGray,
+                        color = if (selected) colorResource(R.color.black) else colorResource(R.color.gray),
                         fontSize = 16.sp
                     )
                 }

@@ -1,5 +1,6 @@
 package com.example.composeshinobicima.features.login.presentaion.viewmodel
 
+import android.util.Log
 import com.example.composeshinobicima.appcore.data.local.SessionManager
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
@@ -86,15 +87,23 @@ class LoginViewModel @Inject constructor(
     }
 
     private suspend fun handleLogin(flowCollector: FlowCollector<LoginResult>, loginRequest: LoginRequest) {
-        when (val result = loginUseCase(loginRequest)) {
+
+        flowCollector.emit(LoginResult.Login(state = CommonViewState(isLoading = true)))
+
+        val result = loginUseCase(loginRequest)
+        Log.d("LoginViewModel", "handleLogin: $result")
+
+        when (result) {
             is DataState.Success -> {
                 flowCollector.emit(LoginResult.Login(state = CommonViewState(data = result.data)))
             }
             is DataState.Error ->{
-                flowCollector.emit(LoginResult.RequestToken(state = CommonViewState(errorThrowable = result.throwable)))
+                flowCollector.emit(LoginResult.Login(state = CommonViewState(errorThrowable = result.throwable)))
 
             }
-            else ->{}
+            else ->{
+                flowCollector.emit(LoginResult.Login(state = CommonViewState(errorThrowable = Throwable("unknown error"))))
+            }
         }
     }
 }

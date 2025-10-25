@@ -12,7 +12,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,7 +38,7 @@ fun MediaTypeList(
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = if (it == mediaType) Color.Black else colorResource(
+                    containerColor = if (it == mediaType) colorResource(R.color.black) else colorResource(
                         R.color.light_gray
                     )
                 ),
@@ -47,7 +46,7 @@ fun MediaTypeList(
             ) {
                 Text(
                     text = if (it==MediaType.Tv)"Tv series" else it.name,
-                    color = if (it == mediaType) Color.White else Color.Gray,
+                    color = if (it == mediaType) colorResource(R.color.white) else colorResource(R.color.gray),
                     fontSize = 18.sp,
                     modifier = Modifier.padding(
                         start = 20.dp,

@@ -13,13 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composeshinobicima.R
 import com.example.composeshinobicima.appcore.data.model.genre.Genre
-import com.example.composeshinobicima.appcore.domain.model.MediaType
 
 
 @Composable
@@ -44,7 +42,7 @@ fun GenreList(
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = if (it.selected) Color.Black else colorResource(
+                    containerColor = if (it.selected) colorResource(R.color.black) else colorResource(
                         R.color.light_gray
                     )
                 ),
@@ -52,7 +50,7 @@ fun GenreList(
             ) {
                 Text(
                     text = it.name?:"",
-                    color = if (it.selected) Color.White else Color.Gray,
+                    color = if (it.selected) colorResource(R.color.white) else colorResource(R.color.gray),
                     fontSize = 18.sp,
                     modifier = Modifier.padding(
                         start = 20.dp,
