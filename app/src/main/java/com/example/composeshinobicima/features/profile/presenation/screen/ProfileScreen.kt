@@ -1,5 +1,7 @@
 package com.example.composeshinobicima.features.profile.presenation.screen
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -161,13 +163,16 @@ fun ProfileScreen(rootController: NavController, childController: NavController)
                     onToggle = {  }
                 )
                 Divider(color = colorResource(R.color.gray))
-                SettingRow("Invite a friend"){
+                SettingRow("Invite a friend") {
+                    val shareText = "🎬 Hey! Check this out: https://drive.google.com/drive/folders/1Gj6obw4bI1gS_cUVc4sJ2xKieJ3vGdbi?usp=sharing"
 
-   /*                 val docUri = Uri.parse("https://docs.google.com/document/d/your-doc-id-here/view")
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
 
-                    val intent = Intent(Intent.ACTION_VIEW, docUri)
-                    context.startActivity(intent)*/
-
+                    val chooser = Intent.createChooser(intent, "Share link via")
+                    context.startActivity(chooser)
                 }
             }
         }
