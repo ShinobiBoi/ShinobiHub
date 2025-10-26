@@ -38,7 +38,7 @@ fun MainScreen(rootController: NavController) {
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
 
-        if (currentRoute !is ScreenResources.DetailScreenRoute && currentRoute !is ScreenResources.DiscoverScreenRoute){
+        if (currentRoute !is ScreenResources.DetailScreenRoute && currentRoute !is ScreenResources.DiscoverScreenRoute && currentRoute !is ScreenResources.FavouritesScreenRoute && currentRoute !is ScreenResources.WatchListScreenRoute){
             CustomBottomNavigationBar(currentRoute) { selectedRoute ->
                 if (selectedRoute != currentRoute) {
                     bottomNavViewModel.onRouteSelected(selectedRoute)

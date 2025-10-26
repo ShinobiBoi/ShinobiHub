@@ -5,22 +5,17 @@ import kotlinx.serialization.Serializable
 
 sealed class ScreenResources {
 
-
     @Serializable
     object AuthScreenRoute : ScreenResources()
-
 
     @Serializable
     object SplashScreenRoute : ScreenResources()
 
-
     @Serializable
     object LoginScreeRoute : ScreenResources()
 
-
     @Serializable
     object MainScreeRoute : ScreenResources()
-
 
     @Serializable
     object FindScreenRoute : ScreenResources()
@@ -37,7 +32,6 @@ sealed class ScreenResources {
     @Serializable
     object FavouritesScreenRoute : ScreenResources()
 
-
     @Serializable
     data class DiscoverScreenRoute(val genreId: Int) : ScreenResources()
 
@@ -50,23 +44,21 @@ sealed class ScreenResources {
     companion object {
         fun fromRoute(route: String): ScreenResources? {
             return when {
+                route.contains(AuthScreenRoute::class.qualifiedName ?: "") -> AuthScreenRoute
+                route.contains(SplashScreenRoute::class.qualifiedName ?: "") -> SplashScreenRoute
+                route.contains(LoginScreeRoute::class.qualifiedName ?: "") -> LoginScreeRoute
+                route.contains(MainScreeRoute::class.qualifiedName ?: "") -> MainScreeRoute
                 route.contains(HomeScreenRoute::class.qualifiedName ?: "") -> HomeScreenRoute
                 route.contains(FindScreenRoute::class.qualifiedName ?: "") -> FindScreenRoute
                 route.contains(ProfileScreenRoute::class.qualifiedName ?: "") -> ProfileScreenRoute
-                route.contains(
-                    DiscoverScreenRoute::class.qualifiedName ?: ""
-                ) -> DiscoverScreenRoute(
-                    1
-                )
-
-                route.contains(DetailScreenRoute::class.qualifiedName ?: "") -> DetailScreenRoute(
-                    0,
-                    MediaType.Movies
-                ) // dummy values
-
+                route.contains(WatchListScreenRoute::class.qualifiedName ?: "") -> WatchListScreenRoute
+                route.contains(FavouritesScreenRoute::class.qualifiedName ?: "") -> FavouritesScreenRoute
+                route.contains(DiscoverScreenRoute::class.qualifiedName ?: "") ->
+                    DiscoverScreenRoute(1) // dummy id
+                route.contains(DetailScreenRoute::class.qualifiedName ?: "") ->
+                    DetailScreenRoute(0, MediaType.Movies) // dummy values
                 else -> null
             }
         }
     }
-
 }

@@ -1,5 +1,6 @@
 package com.example.composeshinobicima.appcore.data.remote
 
+import com.example.composeshinobicima.BuildConfig
 import com.example.composeshinobicima.appcore.data.model.genre.GenreResponse
 import com.example.composeshinobicima.appcore.data.model.movie.MediaResponse
 import com.example.composeshinobicima.features.detail.data.model.credits.CreditsResponse
@@ -357,7 +358,7 @@ interface ApiServices {
 
 
     companion object{
-        const val API_KEY="0e00cb8df334c216bc341e703723c22a"
+        const val API_KEY= BuildConfig.API_KEY
     }
 
 }
