@@ -67,6 +67,22 @@ Compose Navigation ensures type-safe and intuitive navigation.
 
 ---
 
+
+🧩 Architecture Overview
+
+ShinobiHub follows the MVI (Model–View–Intent) architecture pattern for predictable and maintainable state handling.
+Each screen defines:
+
+Actions → User or system-triggered events.
+
+Results → Intermediate processing outcomes.
+
+ViewState → Immutable UI states representing the current screen.
+
+This ensures a unidirectional data flow, making UI logic easier to debug and extend.
+
+
+
 ## 🚀 Quick Start  
 
 ### Prerequisites  
@@ -79,3 +95,26 @@ Compose Navigation ensures type-safe and intuitive navigation.
 1. Clone the repository:
    ```bash
    git clone https://github.com/ShinobiBoi/ShinobiHub.git
+
+
+2. Open the project in Android Studio.
+
+3. Add your TMDB API key:
+    Go to your local.properties file or create an .env file.
+    Add this line:TMDB_API_KEY=your_api_key_here
+
+
+4. Sync the Gradle files.
+
+5. Run the app on your emulator or device.
+
+
+
+🎨 Design
+
+Every screen was designed following Material 3 principles and inspired by modern movie app UX trends.
+All visuals were first prototyped in Figma to ensure consistency and aesthetic coherence.
+
+🎨 Figma Design: https://www.figma.com/design/HzNwCGJrYLb0sNfCKzqEtU/MovieMoz---Movie-Recomendation-App----Community-?t=d9JaRPY9lacD6oDw-0
+
+The theme dynamically adapts to system dark/light mode, keeping the viewing experience seamless.
