@@ -22,9 +22,6 @@ It’s developed entirely with **Jetpack Compose** and follows the **MVI (Model�
 |:----:|:--------:|:----------:|
 | ![Home Screen](docs/screenshots/home.png) | ![Details Screen](docs/screenshots/details.png) | ![Watchlist](docs/screenshots/watchlist.png) |
 
-> Add screenshots in `docs/screenshots/` to make your README more visual.
-
----
 
 ## ✨ Features  
 
