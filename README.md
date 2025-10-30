@@ -20,7 +20,7 @@ It’s developed entirely with **Jetpack Compose** and follows the **MVI (Model�
 
 | Home | Details | Watchlist |
 |:----:|:--------:|:----------:|
-| ![Home Screen](docs/screenshots/home.png) | ![Details Screen](docs/screenshots/details.png) | ![Watchlist](docs/screenshots/watchlist.png) |
+| ![Home Screen](docs/screenshots/home.jpg) | ![Details Screen](docs/screenshots/detail.jpg) | ![Watchlist](docs/screenshots/watchlist.jpg) |
 
 
 ## ✨ Features  
