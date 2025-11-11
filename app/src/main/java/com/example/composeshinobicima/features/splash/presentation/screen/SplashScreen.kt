@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.composeshinobicima.R
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.splash.presentation.viewmodel.SplashAction
 import com.example.composeshinobicima.features.splash.presentation.viewmodel.SplashViewModel
@@ -33,24 +34,37 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun SplashScreen(rootController: NavController, childController: NavController) {
+fun SplashScreen(
+    rootController: NavController,
+    childController: NavController,
+    mediaId: Int,
+    mediaType: MediaType?
+) {
 
 
-    val splashViewModel= hiltViewModel<SplashViewModel>()
+    val splashViewModel = hiltViewModel<SplashViewModel>()
     val state by splashViewModel.viewStates.collectAsState()
 
 
     LaunchedEffect(state.sessionId) {
         splashViewModel.executeAction(SplashAction.GetSessionId)
-        delay(3000)
+        delay(2500)
 
         if (state.sessionId.isNullOrEmpty()) {
-            childController.navigate(ScreenResources.LoginScreeRoute) {
-                popUpTo(ScreenResources.SplashScreenRoute) { inclusive = true }
-                launchSingleTop = true
+
+            if (mediaId != -1) {
+                rootController.navigate(ScreenResources.MainScreeRoute(mediaId, mediaType)) {
+                    popUpTo(ScreenResources.AuthScreenRoute) { inclusive = true }
+                    launchSingleTop = true
+                }
+            } else {
+                childController.navigate(ScreenResources.LoginScreeRoute) {
+                    popUpTo(ScreenResources.SplashScreenRoute) { inclusive = true }
+                    launchSingleTop = true
+                }
             }
         } else {
-            rootController.navigate(ScreenResources.MainScreeRoute) {
+            rootController.navigate(ScreenResources.MainScreeRoute(mediaId, mediaType)) {
                 popUpTo(ScreenResources.AuthScreenRoute) { inclusive = true }
                 launchSingleTop = true
             }
@@ -59,7 +73,9 @@ fun SplashScreen(rootController: NavController, childController: NavController) 
 
 
     Box(
-        modifier = Modifier.fillMaxSize().background(Color.Black)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
     ) {
 
         Image(
@@ -94,8 +110,6 @@ fun SplashScreen(rootController: NavController, childController: NavController) 
         }
 
     }
-
-
 
 
 }

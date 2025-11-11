@@ -16,6 +16,7 @@ import com.example.composeshinobicima.features.login.data.model.login.LoginRespo
 import com.example.composeshinobicima.features.login.data.model.session.SessionRequest
 import com.example.composeshinobicima.features.login.data.model.session.SessionResponse
 import com.example.composeshinobicima.features.login.data.model.token.TokenResponse
+import com.example.composeshinobicima.features.profile.data.model.DeleteSessionRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -51,7 +52,7 @@ interface ApiServices {
 
     @DELETE("authentication/session")
     suspend fun deleteSession(
-        @Body body: SessionRequest,
+        @Body body: DeleteSessionRequest,
         @Query("api_key") key: String = API_KEY
     ): Response<SessionResponse>
 
@@ -107,7 +108,7 @@ interface ApiServices {
     suspend fun getWatchlistTv(
         @Path("account_id") accountId: Int,
         @Query("session_id") sessionId: String,
-        @Query("api_key") key: String = API_KEY
+        @Query("api_key") key: String = API_KEY,
     ): Response<MediaResponse>
 
 
@@ -362,5 +363,28 @@ interface ApiServices {
     }
 
 }
+
+
+
+
+
+
+// api -> endpoint
+
+// retrofit -(base url
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

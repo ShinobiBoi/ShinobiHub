@@ -71,6 +71,7 @@ fun MediaDetailScreen(mediaId: Int, mediaType: MediaType, navController: NavCont
 
 
     val viewModel = hiltViewModel<DetailViewModel>()
+
     val scrollState = rememberScrollState()
 
     val context = LocalContext.current

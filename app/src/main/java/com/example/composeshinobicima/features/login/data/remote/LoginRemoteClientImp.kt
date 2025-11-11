@@ -1,6 +1,5 @@
 package com.example.composeshinobicima.features.login.data.remote
 
-import android.util.Log
 import com.example.composeshinobicima.appcore.data.remote.ApiServices
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.features.login.data.model.login.LoginRequest

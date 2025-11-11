@@ -1,6 +1,5 @@
 package com.example.composeshinobicima.features.login.presentaion.viewmodel
 
-import android.util.Log
 import com.example.composeshinobicima.appcore.data.local.SessionManager
 import com.example.composeshinobicima.appcore.domain.DataState
 import com.example.composeshinobicima.appcore.mvi.CommonViewState
@@ -91,7 +90,6 @@ class LoginViewModel @Inject constructor(
         flowCollector.emit(LoginResult.Login(state = CommonViewState(isLoading = true)))
 
         val result = loginUseCase(loginRequest)
-        Log.d("LoginViewModel", "handleLogin: $result")
 
         when (result) {
             is DataState.Success -> {

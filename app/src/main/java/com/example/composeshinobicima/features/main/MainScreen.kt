@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -16,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.composeshinobicima.BottomNavViewModel
 import com.example.composeshinobicima.CustomBottomNavigationBar
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.detail.presentaion.screen.MediaDetailScreen
 import com.example.composeshinobicima.features.discover.presentaion.screen.DiscoverScreen
@@ -27,7 +30,7 @@ import com.example.composeshinobicima.features.watchlist.presentaion.screen.Watc
 
 
 @Composable
-fun MainScreen(rootController: NavController) {
+fun MainScreen(rootController: NavController,mediaId: Int?, mediaType: MediaType?) {
 
 
 
@@ -35,6 +38,7 @@ fun MainScreen(rootController: NavController) {
     val bottomNavViewModel = hiltViewModel<BottomNavViewModel>()
     val currentRoute by bottomNavViewModel.currentRoute.collectAsState()
 
+    val lastNavigatedMediaId = rememberSaveable { mutableStateOf(-1) }
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
 
@@ -94,6 +98,7 @@ fun MainScreen(rootController: NavController) {
 
         }
 
+
         LaunchedEffect(navController) {
             navController.currentBackStackEntryFlow.collect { backStackEntry ->
                 val route = backStackEntry.destination.route
@@ -102,6 +107,19 @@ fun MainScreen(rootController: NavController) {
                         bottomNavViewModel.onRouteSelected(screen)
                     }
                 }
+            }
+        }
+
+
+        LaunchedEffect(mediaId) {
+            if (mediaId != null && mediaId != -1 && mediaType != null && lastNavigatedMediaId.value != mediaId) {
+                navController.navigate(
+                    ScreenResources.DetailScreenRoute(
+                        id = mediaId,
+                        mediaType = mediaType
+                    )
+                )
+                lastNavigatedMediaId.value = mediaId
             }
         }
 

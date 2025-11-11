@@ -305,7 +305,7 @@ fun FilterSheetContent(
                         color = if (item.selected)
                             colorResource(R.color.white)
                         else
-                            Color.Black,
+                            colorResource(R.color.black),
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                         fontSize = 15.sp
                     )

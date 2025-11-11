@@ -17,4 +17,27 @@ sealed class ProfileResult ():Result<ProfileViewState>{
         }
     }
 
+    data class NotificationToggle(val notification: Boolean) : ProfileResult(){
+        override fun reduce(
+            defaultState: ProfileViewState,
+            oldState: ProfileViewState
+        ): ProfileViewState {
+            return oldState.copy(
+                notification = notification
+            )
+        }
+
+    }
+
+    data class LoggedOut(val loggedOut: CommonViewState<Boolean>) : ProfileResult(){
+        override fun reduce(
+            defaultState: ProfileViewState,
+            oldState: ProfileViewState
+        ): ProfileViewState {
+            return oldState.copy(
+                loggedOut = loggedOut
+            )
+        }
+    }
+
 }

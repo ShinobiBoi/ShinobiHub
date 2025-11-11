@@ -15,7 +15,10 @@ sealed class ScreenResources {
     object LoginScreeRoute : ScreenResources()
 
     @Serializable
-    object MainScreeRoute : ScreenResources()
+    data class MainScreeRoute(
+        val mediaId: Int? = null,
+        val mediaType: MediaType? = null
+    ) : ScreenResources()
 
     @Serializable
     object FindScreenRoute : ScreenResources()
@@ -47,7 +50,7 @@ sealed class ScreenResources {
                 route.contains(AuthScreenRoute::class.qualifiedName ?: "") -> AuthScreenRoute
                 route.contains(SplashScreenRoute::class.qualifiedName ?: "") -> SplashScreenRoute
                 route.contains(LoginScreeRoute::class.qualifiedName ?: "") -> LoginScreeRoute
-                route.contains(MainScreeRoute::class.qualifiedName ?: "") -> MainScreeRoute
+                route.contains(MainScreeRoute::class.qualifiedName ?: "") -> MainScreeRoute()
                 route.contains(HomeScreenRoute::class.qualifiedName ?: "") -> HomeScreenRoute
                 route.contains(FindScreenRoute::class.qualifiedName ?: "") -> FindScreenRoute
                 route.contains(ProfileScreenRoute::class.qualifiedName ?: "") -> ProfileScreenRoute

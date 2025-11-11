@@ -1,7 +1,12 @@
 package com.example.composeshinobicima.features.profile.presenation.screen
 
+import android.Manifest
 import android.content.Intent
-import android.net.Uri
+import android.content.pm.PackageManager
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -27,6 +32,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -34,6 +40,8 @@ import com.example.composeshinobicima.R
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.profile.presenation.viewmodel.ProfileAction
 import com.example.composeshinobicima.features.profile.presenation.viewmodel.ProfileViewModel
+
+
 
 @Composable
 fun ProfileScreen(rootController: NavController, childController: NavController) {
@@ -45,6 +53,21 @@ fun ProfileScreen(rootController: NavController, childController: NavController)
 
     LaunchedEffect(Unit) {
         profileViewModel.executeAction(ProfileAction.GetAccount)
+        profileViewModel.executeAction(ProfileAction.GetNotifications(context))
+    }
+
+    LaunchedEffect(state.loggedOut) {
+        if (state.loggedOut.isSuccess){
+
+            rootController.navigate(ScreenResources.AuthScreenRoute) {
+                popUpTo(ScreenResources.MainScreeRoute()) { inclusive = true }
+                launchSingleTop = true
+            }
+        }
+        else if (state.loggedOut.errorThrowable !=null){
+
+            Toast.makeText(context, state.loggedOut.errorThrowable?.message?:"", Toast.LENGTH_SHORT).show()
+        }
     }
 
 
@@ -130,10 +153,7 @@ fun ProfileScreen(rootController: NavController, childController: NavController)
                     modifier = Modifier.clickable(
                         onClick = {
                             profileViewModel.executeAction(ProfileAction.LogOut)
-                            rootController.navigate(ScreenResources.AuthScreenRoute) {
-                                popUpTo(ScreenResources.MainScreeRoute) { inclusive = true }
-                                launchSingleTop = true
-                            }
+
                         }
                     )
                 )
@@ -157,6 +177,14 @@ fun ProfileScreen(rootController: NavController, childController: NavController)
 
 
             Column {
+
+                NotificationPermissionToggle(
+                    isEnabled = state.notification,
+                    onToggle = {
+                        profileViewModel.executeAction(ProfileAction.ToggleNotifications(it, context))
+                    }
+                )
+                Divider(color = colorResource(R.color.gray))
                 SettingRowSwitch(
                     title = "Dark Mode",
                     checked = isSystemInDarkTheme(),
@@ -252,4 +280,50 @@ fun SettingRowSwitch(title: String, checked: Boolean, onToggle: (Boolean) -> Uni
         Text(text = title, color = colorResource(R.color.dark_blue), fontSize = 15.sp)
         Switch(checked = checked, onCheckedChange = onToggle)
     }
+}
+
+
+@Composable
+fun NotificationPermissionToggle(
+    isEnabled: Boolean,
+    onToggle: (Boolean) -> Unit
+) {
+    val context = LocalContext.current
+
+    // Launcher to request notification permission
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            // Permission granted, update toggle state
+            onToggle(true)
+        } else {
+            // Permission denied, keep toggle off
+            onToggle(false)
+        }
+    }
+
+    SettingRowSwitch(
+        title = "Notification",
+        checked = isEnabled,
+        onToggle = { checked ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val granted = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+
+                if (!granted && checked) {
+                    // Request permission
+                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    // Already granted or user turned off
+                    onToggle(checked)
+                }
+            } else {
+                // Pre-Android 13, permission is automatically granted
+                onToggle(checked)
+            }
+        }
+    )
 }

@@ -66,6 +66,11 @@ android {
 
 dependencies {
 
+    implementation (libs.androidx.work.runtime.ktx)
+
+    implementation(libs.coil)
+
+
     implementation(libs.core)
 
     implementation (libs.androidx.datastore.preferences)

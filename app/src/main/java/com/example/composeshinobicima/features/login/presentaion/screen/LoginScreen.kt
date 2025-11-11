@@ -77,7 +77,7 @@ fun LoginScreen(rootController: NavController) {
     LaunchedEffect(state.sessionId.data) {
         if (state.sessionId.data != null) {
             loginViewModel.executeAction(LoginActions.SaveSessionId(state.sessionId.data!!))
-            rootController.navigate(ScreenResources.MainScreeRoute) {
+            rootController.navigate(ScreenResources.MainScreeRoute()) {
                 popUpTo(ScreenResources.AuthScreenRoute) { inclusive = true }
                 launchSingleTop = true
             }
@@ -197,7 +197,7 @@ fun LoginScreen(rootController: NavController) {
 
                     TextButton(
                         onClick = {
-                            rootController.navigate(ScreenResources.MainScreeRoute) {
+                            rootController.navigate(ScreenResources.MainScreeRoute()) {
                                 popUpTo(ScreenResources.AuthScreenRoute) { inclusive = true }
                                 launchSingleTop = true
                             }

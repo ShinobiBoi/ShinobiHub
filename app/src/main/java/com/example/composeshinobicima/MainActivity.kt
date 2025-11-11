@@ -1,5 +1,6 @@
 package com.example.composeshinobicima
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,55 +10,85 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composeshinobicima.appcore.data.remote.ApiServices
+import androidx.navigation.toRoute
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.auth.AuthScreen
 import com.example.composeshinobicima.features.home.presentaion.screen.HomeScreen
 import com.example.composeshinobicima.features.main.MainScreen
 import com.example.composeshinobicima.ui.theme.ComposeShinobiCimaTheme
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 
-    @Inject
-    lateinit var apiServices: ApiServices
+    lateinit var rootController: NavHostController
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
 
+            val mediaId = intent.getIntExtra("media_id", -1)
+            val mediaTypeName = intent.getStringExtra("media_type") ?: "movie"
+            val mediaType = MediaType(mediaTypeName)
 
             ComposeShinobiCimaTheme {
-                val rootController = rememberNavController()
+                 rootController = rememberNavController()
 
-                    NavHost(
-                        navController = rootController,
-                        startDestination = ScreenResources.AuthScreenRoute,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
+                NavHost(
+                    navController = rootController,
+                    startDestination = ScreenResources.AuthScreenRoute,
+                    modifier = Modifier.fillMaxSize()
+                ) {
 
-                        composable<ScreenResources.AuthScreenRoute> {
-                            AuthScreen(rootController)
+                    composable<ScreenResources.AuthScreenRoute> {
+                        AuthScreen(rootController,mediaId,mediaType)
 
-                        }
-                        composable<ScreenResources.MainScreeRoute> {
-                            MainScreen(rootController)
-
-                        }
                     }
+                    composable<ScreenResources.MainScreeRoute> {
+                        val args = it.toRoute<ScreenResources.MainScreeRoute>()
+                        MainScreen(rootController,args.mediaId,args.mediaType)
 
-
+                    }
                 }
+
+
+            }
         }
     }
+
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        intent?.let {
+            val mediaId = it.getIntExtra("media_id", -1)
+            val mediaTypeName = it.getStringExtra("media_type") ?: "movie"
+            val mediaType = MediaType(mediaTypeName)
+
+            // Get NavController from Compose (you need a way to access it)
+            // One option is using a singleton or ViewModel to hold the controller
+            rootController.navigate(ScreenResources.MainScreeRoute(mediaId, mediaType)) {
+                popUpTo(ScreenResources.AuthScreenRoute) { inclusive = true }
+                launchSingleTop = true
+            }
+
+        }
+
+
+    }
+
+
 }
+
+
 
 @Preview(showBackground = true)
 @Composable

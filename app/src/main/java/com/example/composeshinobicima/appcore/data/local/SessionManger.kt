@@ -2,6 +2,7 @@ package com.example.composeshinobicima.appcore.data.local
 
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -16,6 +17,7 @@ class SessionManager(private val context: Context) {
     companion object {
         private val SESSION_ID_KEY = stringPreferencesKey("session_id")
         private val ACCOUNT_ID_KEY = intPreferencesKey("account_id")
+        private val NOTIFICATION_KEY = booleanPreferencesKey("notification")
     }
 
     // Save both session id and account id
@@ -40,6 +42,12 @@ class SessionManager(private val context: Context) {
         }
     }
 
+    suspend fun saveNotification(boolean: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[NOTIFICATION_KEY] = boolean
+        }
+    }
+
     // Read session id
     fun getSessionId(): Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[SESSION_ID_KEY]
@@ -49,6 +57,11 @@ class SessionManager(private val context: Context) {
     fun getAccountId(): Flow<Int?> = context.dataStore.data.map { prefs ->
         prefs[ACCOUNT_ID_KEY]
     }
+
+    fun getNotification(): Flow<Boolean?> = context.dataStore.data.map { prefs ->
+        prefs[NOTIFICATION_KEY]
+    }
+
 
     // Clear both (logout)
     suspend fun clearSession() {

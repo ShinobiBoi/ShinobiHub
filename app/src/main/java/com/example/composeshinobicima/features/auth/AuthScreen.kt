@@ -1,7 +1,6 @@
 package com.example.composeshinobicima.features.auth
 
-import android.util.Log
-import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,13 +8,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composeshinobicima.appcore.domain.model.MediaType
 import com.example.composeshinobicima.appcore.navigation.ScreenResources
 import com.example.composeshinobicima.features.login.presentaion.screen.LoginScreen
 import com.example.composeshinobicima.features.splash.presentation.screen.SplashScreen
 
 
 @Composable
-fun AuthScreen(rootController: NavController) {
+fun AuthScreen(rootController: NavController, mediaId: Int, mediaType: MediaType?) {
 
     val childController = rememberNavController()
     NavHost(
@@ -24,7 +24,7 @@ fun AuthScreen(rootController: NavController) {
         modifier = Modifier.fillMaxSize()
     ) {
         composable<ScreenResources.SplashScreenRoute> {
-            SplashScreen(rootController, childController)
+            SplashScreen(rootController, childController,mediaId,mediaType)
         }
         composable<ScreenResources.LoginScreeRoute> {
             LoginScreen(rootController)
