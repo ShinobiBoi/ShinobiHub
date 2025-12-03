@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "935004998738",
+    "project_id": "beshaboi-shinobihub",
+    "storage_bucket": "beshaboi-shinobihub.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935004998738:android:d101d9d762eb8c5af2238b",
+        "android_client_info": {
+          "package_name": "com.besha.shinobihub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAza_nl9uZMVu_aCWpgKQ7euwCXzIqjKkY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

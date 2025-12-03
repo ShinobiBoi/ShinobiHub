@@ -10,18 +10,19 @@ plugins {
 
     //dagger hilt
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
-    namespace = "com.example.composeshinobicima"
+    namespace = "com.besha.shinobihub"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.composeshinobicima"
+        applicationId = "com.besha.shinobihub"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "1.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -35,9 +36,7 @@ android {
 
         val apiKey = localProperties.getProperty("API_KEY") ?: throw GradleException("API key not found in local.properties")
 
-        defaultConfig {
-            buildConfigField("String", "API_KEY", "\"$apiKey\"")
-        }
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -89,6 +88,7 @@ dependencies {
 
     // Dagger Hilt
     implementation(libs.hilt.android)
+    implementation(libs.firebase.messaging)
     ksp(libs.hilt.compiler)
 
 
