@@ -18,8 +18,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.besha.shinobihub.BottomNavViewModel
 import com.besha.shinobihub.CustomBottomNavigationBar
+import com.besha.shinobihub.appcore.data.model.movie.MediaResponse
 import com.besha.shinobihub.appcore.domain.model.MediaType
 import com.besha.shinobihub.appcore.navigation.ScreenResources
+import com.besha.shinobihub.features.about.AboutScreen
 import com.besha.shinobihub.features.detail.presentaion.screen.MediaDetailScreen
 import com.besha.shinobihub.features.discover.presentaion.screen.DiscoverScreen
 import com.besha.shinobihub.features.favourite.presentaion.screen.FavouriteScreen
@@ -42,7 +44,7 @@ fun MainScreen(rootController: NavController,mediaId: Int?, mediaType: MediaType
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
 
-        if (currentRoute !is ScreenResources.DetailScreenRoute && currentRoute !is ScreenResources.DiscoverScreenRoute && currentRoute !is ScreenResources.FavouritesScreenRoute && currentRoute !is ScreenResources.WatchListScreenRoute){
+        if (currentRoute !is ScreenResources.DetailScreenRoute && currentRoute !is ScreenResources.DiscoverScreenRoute && currentRoute !is ScreenResources.FavouritesScreenRoute && currentRoute !is ScreenResources.WatchListScreenRoute && currentRoute !is ScreenResources.AboutScreenRoute){
             CustomBottomNavigationBar(currentRoute) { selectedRoute ->
                 if (selectedRoute != currentRoute) {
                     bottomNavViewModel.onRouteSelected(selectedRoute)
@@ -94,6 +96,9 @@ fun MainScreen(rootController: NavController,mediaId: Int?, mediaType: MediaType
             }
             composable<ScreenResources.FavouritesScreenRoute> {
                 FavouriteScreen(navController)
+            }
+            composable<ScreenResources.AboutScreenRoute> {
+                AboutScreen(navController)
             }
 
         }

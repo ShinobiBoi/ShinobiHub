@@ -22,11 +22,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitInstance(baseUrl: String): Retrofit =
-        Retrofit.Builder()
+    fun provideRetrofitInstance(baseUrl: String): Retrofit {
+
+
+        return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+
+    }
 
 
     @Provides
@@ -40,6 +45,7 @@ object AppModule {
     fun provideSessionManager(@ApplicationContext context: Context): SessionManager {
         return SessionManager(context)
     }
+
 
 
 }

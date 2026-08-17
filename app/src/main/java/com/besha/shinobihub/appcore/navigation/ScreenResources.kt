@@ -36,6 +36,9 @@ sealed class ScreenResources {
     object FavouritesScreenRoute : ScreenResources()
 
     @Serializable
+    object AboutScreenRoute : ScreenResources()
+
+    @Serializable
     data class DiscoverScreenRoute(val genreId: Int) : ScreenResources()
 
     @Serializable
@@ -56,6 +59,7 @@ sealed class ScreenResources {
                 route.contains(ProfileScreenRoute::class.qualifiedName ?: "") -> ProfileScreenRoute
                 route.contains(WatchListScreenRoute::class.qualifiedName ?: "") -> WatchListScreenRoute
                 route.contains(FavouritesScreenRoute::class.qualifiedName ?: "") -> FavouritesScreenRoute
+                route.contains(AboutScreenRoute::class.qualifiedName ?: "") -> AboutScreenRoute
                 route.contains(DiscoverScreenRoute::class.qualifiedName ?: "") ->
                     DiscoverScreenRoute(1) // dummy id
                 route.contains(DetailScreenRoute::class.qualifiedName ?: "") ->
